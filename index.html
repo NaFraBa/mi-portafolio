@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Ignacio Fraile — Profesional IT. Portafolio personal con proyectos, habilidades y experiencia en tecnología.">
+    <meta name="author" content="Ignacio Fraile">
+    <meta name="theme-color" content="#09090b">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Ignacio Fraile — Profesional IT">
+    <meta property="og:description"
+        content="Portafolio profesional de Ignacio Fraile. Desarrollo, tecnología y soluciones IT.">
+    <meta property="og:type" content="website">
+
+    <title>Ignacio Fraile — Profesional IT</title>
+
+    <link rel="icon" href="./Assets/favicon_ifb.ico">
+
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- ═══ Custom Cursor Glow ═══ -->
+    <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+
+    <!-- ═══ Header / Navigation Pill ═══ -->
+    <header class="header" id="header">
+        <nav class="nav-pill" id="navPill" role="navigation" aria-label="Navegación principal">
+
+            <!-- Logo -->
+            <a href="#hero" class="nav-logo" aria-label="Inicio">
+                <span class="logo-dot" aria-hidden="true"></span>
+                <span>IF</span>
+            </a>
+
+            <!-- Separator -->
+            <div class="nav-separator" aria-hidden="true"></div>
+
+            <!-- Links -->
+            <ul class="nav-links" id="navLinks" role="menubar">
+                <li role="none"><a href="#hero" class="nav-link active" role="menuitem">Inicio</a></li>
+                <li role="none"><a href="#about" class="nav-link" role="menuitem">Sobre mí</a></li>
+                <li role="none"><a href="#projects" class="nav-link" role="menuitem">Proyectos</a></li>
+                <li role="none"><a href="#skills" class="nav-link" role="menuitem">Skills</a></li>
+                <li role="none"><a href="#contact" class="nav-link" role="menuitem">Contacto</a></li>
+            </ul>
+
+            <!-- CTA -->
+            <a href="#contact" class="nav-cta" id="navCta">Hablemos</a>
+
+            <!-- Mobile toggle -->
+            <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </nav>
+    </header>
+
+    <!-- ═══ Hero Section ═══ -->
+    <section class="hero" id="hero">
+
+        <!-- Background layers -->
+        <div class="hero-bg" aria-hidden="true"></div>
+        <div class="hero-grid" aria-hidden="true"></div>
+
+        <!-- Floating orbs (parallax with mouse) -->
+        <div class="hero-orbs" aria-hidden="true">
+            <div class="hero-orb hero-orb--1"></div>
+            <div class="hero-orb hero-orb--2"></div>
+            <div class="hero-orb hero-orb--3"></div>
+        </div>
+
+        <!-- Noise texture -->
+        <div class="hero-noise" aria-hidden="true"></div>
+
+        <!-- Particle canvas -->
+        <canvas id="hero-particles" aria-hidden="true"></canvas>
+
+        <!-- Vignette -->
+        <div class="hero-vignette" aria-hidden="true"></div>
+
+        <!-- Content -->
+        <div class="hero-content">
+
+            <!-- Status badge -->
+            <!--<div class="hero-badge">
+                <span class="badge-dot" aria-hidden="true"></span>
+                Disponible para proyectos
+            </div>-->
+
+            <!-- Greeting -->
+            <p class="hero-greeting">// Hola Bienvenido</p>
+
+
+            <!-- Main title -->
+            <h1 class="hero-title">
+                Soy <span class="title-highlight">Ignacio Fraile</span>,<br>
+                Profesional IT
+            </h1>
+
+            <!-- Subtitle -->
+            <p class="hero-subtitle">
+                Transformo ideas complejas en experiencias digitales excepcionales.
+                Diseño, desarrollo y soluciones tecnológicas con visión estratégica.
+            </p>
+
+            <!-- CTA Buttons -->
+            <div class="hero-cta-group">
+                <a href="#projects" class="btn btn--primary">
+                    <span>Ver Proyectos</span>
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                </a>
+                <a href="#contact" class="btn btn--ghost">
+                    <span>Contactar</span>
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path
+                            d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+
+        <!-- Scroll indicator -->
+        <div class="hero-scroll-indicator" aria-hidden="true">
+            <span class="scroll-text">Scroll</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- Scripts -->
+    <script src="app.js"></script>
+</body>
+
+</html>
