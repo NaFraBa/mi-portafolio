@@ -924,11 +924,86 @@ button {
    Sección Acerca de Mí - Estilos Generales
    ========================================= */
 .about-section {
+  position: relative;
   background-color: #050810;
   /* Azul muy oscuro, casi negro */
   padding: 120px 20px;
   font-family: 'Inter', 'Roboto', sans-serif;
   overflow: hidden;
+}
+
+/* Capas de fondo interactivas */
+.about-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.about-bg::before {
+  content: '';
+  position: absolute;
+  width: 130%;
+  height: 130%;
+  top: -15%;
+  left: -15%;
+  background:
+    radial-gradient(ellipse 650px 650px at var(--about-mouse-x, 50%) var(--about-mouse-y, 50%),
+      rgba(0, 240, 255, 0.12) 0%,
+      transparent 70%),
+    radial-gradient(ellipse 800px 800px at calc(var(--about-mouse-x, 50%) + 15%) calc(var(--about-mouse-y, 50%) - 10%),
+      rgba(40, 69, 212, 0.08) 0%,
+      transparent 60%),
+    radial-gradient(ellipse 500px 500px at calc(100% - var(--about-mouse-x, 50%)) calc(100% - var(--about-mouse-y, 50%)),
+      rgba(0, 240, 255, 0.05) 0%,
+      transparent 60%);
+  transition: all 0.15s ease-out;
+}
+
+.about-grid {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(ellipse 70% 60% at var(--about-mouse-x, 50%) var(--about-mouse-y, 50%),
+      black 0%,
+      transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at var(--about-mouse-x, 50%) var(--about-mouse-y, 50%),
+      black 0%,
+      transparent 100%);
+  opacity: 0.4;
+  transition: mask-image 0.1s ease-out;
+  pointer-events: none;
+}
+
+.about-noise {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  opacity: 0.25;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.about-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: radial-gradient(ellipse 80% 80% at 50% 50%,
+      transparent 30%,
+      rgba(5, 8, 16, 0.6) 100%);
+  pointer-events: none;
+}
+
+#about-particles {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
 }
 
 .about-container {
@@ -938,6 +1013,8 @@ button {
   flex-wrap: wrap;
   align-items: center;
   gap: 60px;
+  position: relative;
+  z-index: 10;
 }
 
 .about-left,
@@ -985,6 +1062,24 @@ button {
   transition: transform 0.15s ease-out;
   /* Sombra sutil para despegar la silueta del fondo */
   filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.15));
+  mix-blend-mode: lighten;
+}
+
+/* Scroll Reveal / Aparición con degradado suave */
+.reveal-fade-in {
+  opacity: 0;
+  transform: translateY(40px);
+  filter: blur(10px);
+  transition: opacity 1.2s var(--ease-out-expo),
+              transform 1.2s var(--ease-out-expo),
+              filter 1.2s var(--ease-out-expo);
+  will-change: opacity, transform, filter;
+}
+
+.reveal-fade-in.reveal-active {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
 }
 
 /* =========================================

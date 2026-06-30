@@ -13,6 +13,7 @@
   const navCta = document.getElementById('navCta');
   const cursorGlow = document.getElementById('cursorGlow');
   const heroSection = document.getElementById('hero');
+  const aboutSection = document.getElementById('about');
   const canvas = document.getElementById('hero-particles');
   const aboutCanvas = document.getElementById('about-particles');
   const orbs = document.querySelectorAll('.hero-orb');
@@ -63,6 +64,15 @@
     document.documentElement.style.setProperty('--mouse-y', `${mouseY}px`);
     document.documentElement.style.setProperty('--mouse-x-norm', normX.toFixed(3));
     document.documentElement.style.setProperty('--mouse-y-norm', normY.toFixed(3));
+
+    // Update about section mouse tracking CSS vars (relative to section)
+    if (aboutSection) {
+      const aboutRect = aboutSection.getBoundingClientRect();
+      const aboutMouseX = mouseX - aboutRect.left;
+      const aboutMouseY = mouseY - aboutRect.top;
+      aboutSection.style.setProperty('--about-mouse-x', `${aboutMouseX}px`);
+      aboutSection.style.setProperty('--about-mouse-y', `${aboutMouseY}px`);
+    }
 
     // Update cursor glow position
     if (cursorGlow && !isTouch) {
@@ -208,6 +218,82 @@
             this.ctx.strokeStyle = `rgba(74, 108, 247, ${opacity})`;
             this.ctx.lineWidth = 0.5;
             this.ctx.stroke();
+          }
+        }
+      }
+    }
+  }
+
+  // ══════════════════════════════════════════════════════════
+  //  2b. TRIANGLE PARTICLE SYSTEM — Dense dots + triangle mesh
+  // ══════════════════════════════════════════════════════════
+
+  class TriangleParticleSystem extends ParticleSystem {
+    constructor(canvas) {
+      super(canvas);
+      this.lineMaxDist = 150;
+    }
+
+    init() {
+      // Much higher density for the about section
+      const area = this.width * this.height;
+      const count = Math.min(Math.floor(area / 5000), 180);
+      this.particles = [];
+      for (let i = 0; i < count; i++) {
+        this.particles.push(new Particle(this.width, this.height));
+      }
+    }
+
+    drawConnections() {
+      const len = this.particles.length;
+      const maxDist = this.lineMaxDist;
+
+      // Draw lines between nearby particles AND fill triangles
+      for (let i = 0; i < len; i++) {
+        for (let j = i + 1; j < len; j++) {
+          const a = this.particles[i];
+          const b = this.particles[j];
+          const dxAB = a.x - b.x;
+          const dyAB = a.y - b.y;
+          const distAB = Math.sqrt(dxAB * dxAB + dyAB * dyAB);
+
+          if (distAB < maxDist) {
+            // Draw the line
+            const lineOpacity = (1 - distAB / maxDist) * 0.15;
+            this.ctx.beginPath();
+            this.ctx.moveTo(a.x, a.y);
+            this.ctx.lineTo(b.x, b.y);
+            this.ctx.strokeStyle = `rgba(0, 240, 255, ${lineOpacity})`;
+            this.ctx.lineWidth = 0.6;
+            this.ctx.stroke();
+
+            // Look for a third particle to form a triangle
+            for (let k = j + 1; k < len; k++) {
+              const c = this.particles[k];
+              const dxAC = a.x - c.x;
+              const dyAC = a.y - c.y;
+              const distAC = Math.sqrt(dxAC * dxAC + dyAC * dyAC);
+
+              if (distAC < maxDist) {
+                const dxBC = b.x - c.x;
+                const dyBC = b.y - c.y;
+                const distBC = Math.sqrt(dxBC * dxBC + dyBC * dyBC);
+
+                if (distBC < maxDist) {
+                  // All three sides are close — fill the triangle
+                  const avgDist = (distAB + distAC + distBC) / 3;
+                  const fillOpacity = (1 - avgDist / maxDist) * 0.035;
+
+                  this.ctx.beginPath();
+                  this.ctx.moveTo(a.x, a.y);
+                  this.ctx.lineTo(b.x, b.y);
+                  this.ctx.lineTo(c.x, c.y);
+                  this.ctx.closePath();
+                  this.ctx.fillStyle = `rgba(0, 240, 255, ${fillOpacity})`;
+                  this.ctx.fill();
+                }
+              }
+            }
           }
         }
       }
@@ -370,7 +456,7 @@
       particleSystem = new ParticleSystem(canvas);
     }
     if (aboutCanvas) {
-      aboutParticleSystem = new ParticleSystem(aboutCanvas);
+      aboutParticleSystem = new TriangleParticleSystem(aboutCanvas);
     }
 
     // Mouse tracking
@@ -450,6 +536,25 @@
         if (navToggle) navToggle.focus();
       }
     });
+
+    // ══════════════════════════════════════════════════════════
+    //  SCROLL REVEAL — IntersectionObserver
+    // ══════════════════════════════════════════════════════════
+    const revealElements = document.querySelectorAll('.reveal-fade-in');
+    if (revealElements.length > 0) {
+      const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('reveal-active');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0.15,
+        rootMargin: '0px 0px -50px 0px'
+      });
+      revealElements.forEach((el) => revealObserver.observe(el));
+    }
   }
 
   // Wait for DOM
