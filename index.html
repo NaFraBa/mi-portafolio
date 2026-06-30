@@ -18,7 +18,7 @@
     <title>Ignacio Fraile — Profesional IT</title>
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="favicon_ifb.ico">
+    <link rel="icon" type="image/x-icon" href="assets/favicon_ifb.ico">
 
     <!-- Preconnect for performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -139,6 +139,41 @@
         <div class="hero-scroll-indicator" aria-hidden="true">
             <span class="scroll-text">Scroll</span>
             <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- Sección Acerca de Mí -->
+    <section id="about" class="about-section">
+        <!-- Particle canvas para sección about -->
+        <canvas id="about-particles" aria-hidden="true" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0;"></canvas>
+        <div class="about-container" style="position: relative; z-index: 1;">
+
+            <!-- Columna Izquierda: Foto con Aura y Paralaje -->
+            <div class="about-left">
+                <div class="image-wrapper" id="parallax-wrapper">
+                    <div class="aura"></div>
+                    <!-- Asegúrate de que la ruta de la imagen sea correcta -->
+                    <img src="assets/48a.png" alt="Mi Silueta" class="profile-silhouette" id="parallax-img">
+                </div>
+            </div>
+
+            <!-- Columna Derecha: Tarjeta Glassmorphism -->
+            <div class="about-right">
+                <div class="glass-card" id="glow-card">
+                    <!-- Reemplaza con la ruta real de tu logo -->
+                    <img src="assets/Logo_Design.png" alt="Logo" class="card-logo">
+
+                    <h2 class="card-title">Acerca de Mí</h2>
+
+                    <p class="card-text">
+                        Hola tengo interés por el estudio y el aprendizaje permanente, me considero una persona con
+                        capacidad organizativa, analítica y de supervisión con especial atención al mínimo detalle,
+                        también soy dinámico y ordenado, me gusta el trabajo en equipo cuando es necesario, alcanzando
+                        un perfil radio en telecomunicaciones participando en múltiples proyectos.
+                    </p>
+                </div>
+            </div>
+
         </div>
     </section>
 

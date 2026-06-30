@@ -7,14 +7,15 @@
   'use strict';
 
   // ── DOM References ──────────────────────────────────────
-  const header     = document.getElementById('header');
-  const navToggle  = document.getElementById('navToggle');
-  const navLinks   = document.getElementById('navLinks');
-  const navCta     = document.getElementById('navCta');
+  const header = document.getElementById('header');
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+  const navCta = document.getElementById('navCta');
   const cursorGlow = document.getElementById('cursorGlow');
   const heroSection = document.getElementById('hero');
-  const canvas     = document.getElementById('hero-particles');
-  const orbs       = document.querySelectorAll('.hero-orb');
+  const canvas = document.getElementById('hero-particles');
+  const aboutCanvas = document.getElementById('about-particles');
+  const orbs = document.querySelectorAll('.hero-orb');
 
   // ── State ───────────────────────────────────────────────
   let mouseX = window.innerWidth / 2;
@@ -66,7 +67,7 @@
     // Update cursor glow position
     if (cursorGlow && !isTouch) {
       cursorGlow.style.left = `${mouseX}px`;
-      cursorGlow.style.top  = `${mouseY}px`;
+      cursorGlow.style.top = `${mouseY}px`;
     }
 
     // Parallax orbs — each orb moves at different speed
@@ -173,8 +174,9 @@
 
     update() {
       this.time++;
-      const mx = mouseX;
-      const my = mouseY;
+      const rect = this.canvas.getBoundingClientRect();
+      const mx = mouseX - rect.left;
+      const my = mouseY - rect.top;
 
       this.ctx.clearRect(0, 0, this.width, this.height);
 
@@ -285,7 +287,7 @@
         e.preventDefault();
         const targetId = this.getAttribute('href');
         if (!targetId || targetId === '#') return;
-        
+
         try {
           const targetEl = document.querySelector(targetId);
 
@@ -363,8 +365,12 @@
 
     // Particle system
     let particleSystem = null;
+    let aboutParticleSystem = null;
     if (canvas) {
       particleSystem = new ParticleSystem(canvas);
+    }
+    if (aboutCanvas) {
+      aboutParticleSystem = new ParticleSystem(aboutCanvas);
     }
 
     // Mouse tracking
@@ -377,6 +383,9 @@
     function animateParticles() {
       if (particleSystem) {
         particleSystem.update();
+      }
+      if (aboutParticleSystem) {
+        aboutParticleSystem.update();
       }
       requestAnimationFrame(animateParticles);
     }
@@ -408,6 +417,10 @@
         if (particleSystem) {
           particleSystem.resize();
           particleSystem.init();
+        }
+        if (aboutParticleSystem) {
+          aboutParticleSystem.resize();
+          aboutParticleSystem.init();
         }
         closeMobileMenu();
       }, 250);
@@ -446,3 +459,56 @@
     init();
   }
 })();
+
+
+document.addEventListener('DOMContentLoaded', () => {
+
+  // --- EFECTO 1: Paralaje en la Silueta ---
+  const parallaxImg = document.getElementById('parallax-img');
+  const parallaxWrapper = document.getElementById('parallax-wrapper');
+
+  if (parallaxWrapper && parallaxImg) {
+    parallaxWrapper.addEventListener('mousemove', (e) => {
+      const rect = parallaxWrapper.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+
+      // Ajusta el divisor (25) para hacer el movimiento más o menos sutil
+      const moveX = (x - centerX) / 25;
+      const moveY = (y - centerY) / 25;
+
+      // Aplicar transformación a la imagen
+      parallaxImg.style.transform = `translate(${moveX}px, ${moveY}px)`;
+    });
+
+    // Reiniciar posición al sacar el ratón
+    parallaxWrapper.addEventListener('mouseleave', () => {
+      parallaxImg.style.transform = `translate(0px, 0px)`;
+      parallaxImg.style.transition = `transform 0.5s ease-out`; // Retorno suave
+    });
+
+    // Quitar la transición durante el movimiento para que no tenga "lag"
+    parallaxWrapper.addEventListener('mouseenter', () => {
+      parallaxImg.style.transition = `transform 0.1s ease-out`;
+    });
+  }
+
+  // --- EFECTO 2: Seguimiento de Luz Azul (Mouse-Tracking Glow) ---
+  const glowCard = document.getElementById('glow-card');
+
+  if (glowCard) {
+    glowCard.addEventListener('mousemove', (e) => {
+      const rect = glowCard.getBoundingClientRect();
+      // Calcular la posición del ratón relativa a la tarjeta
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      // Actualizar variables CSS para mover el pseudo-elemento ::before
+      glowCard.style.setProperty('--x', `${x}px`);
+      glowCard.style.setProperty('--y', `${y}px`);
+    });
+  }
+});
