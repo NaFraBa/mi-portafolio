@@ -611,9 +611,17 @@ button {
   border-right: 2px solid #9d4edd;
   animation: blink-caret 0.75s step-end infinite;
 }
+
 @keyframes blink-caret {
-  from, to { border-color: transparent }
-  50% { border-color: #9d4edd; }
+
+  from,
+  to {
+    border-color: transparent
+  }
+
+  50% {
+    border-color: #9d4edd;
+  }
 }
 
 .hero-title {
@@ -938,7 +946,8 @@ button {
   padding: clamp(3rem, 6vw, 6rem) clamp(1rem, 3vw, 2.5rem);
   background-color: #0b0b12;
   background: linear-gradient(135deg, rgba(11, 11, 18, 0.96), rgba(7, 7, 12, 0.98));
-  position: relative; /* Obligatorio para que el canvas se posicione bien */
+  position: relative;
+  /* Obligatorio para que el canvas se posicione bien */
   overflow: hidden;
   border: none;
   border-radius: 0;
@@ -1066,7 +1075,8 @@ button {
 .bio-text {
   font-size: 1.05rem;
   line-height: 1.7;
-  color: #b0b3c1; /* Gris suave premium para lectura cómoda */
+  color: #b0b3c1;
+  /* Gris suave premium para lectura cómoda */
   font-weight: 300;
   margin: 0;
 }
@@ -1090,15 +1100,20 @@ button {
 .scroll-timeline::-webkit-scrollbar {
   width: 4px;
 }
+
 .scroll-timeline::-webkit-scrollbar-track {
   background: transparent;
 }
+
 .scroll-timeline::-webkit-scrollbar-thumb {
-  background: rgba(22, 48, 190, 0.4); /* Tu azul eléctrico sutil */
+  background: rgba(22, 48, 190, 0.4);
+  /* Tu azul eléctrico sutil */
   border-radius: 10px;
 }
+
 .scroll-timeline::-webkit-scrollbar-thumb:hover {
-  background: var(--lavender-electric); /* Brilla en lavanda al interactuar */
+  background: var(--lavender-electric);
+  /* Brilla en lavanda al interactuar */
 }
 
 /* Elementos de la línea de tiempo */
@@ -1211,6 +1226,7 @@ button {
 .kpi-display {
   text-align: center;
 }
+
 .kpi-number {
   font-family: 'Space Grotesk', sans-serif;
   font-size: 3rem;
@@ -1222,6 +1238,7 @@ button {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
 .kpi-label {
   display: block;
   font-size: 0.8rem;
@@ -1309,8 +1326,10 @@ button {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 0;          /* Al fondo de todo */
-  pointer-events: none; /* Permite hacer clic y seleccionar texto sobre él */
+  z-index: 0;
+  /* Al fondo de todo */
+  pointer-events: none;
+  /* Permite hacer clic y seleccionar texto sobre él */
 }
 
 /* ==========================================================================
@@ -1321,8 +1340,8 @@ button {
   transform: translateY(40px);
   filter: blur(10px);
   transition: opacity 1.2s var(--ease-out-expo),
-              transform 1.2s var(--ease-out-expo),
-              filter 1.2s var(--ease-out-expo);
+    transform 1.2s var(--ease-out-expo),
+    filter 1.2s var(--ease-out-expo);
   will-change: opacity, transform, filter;
 }
 
