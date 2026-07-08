@@ -8,6 +8,12 @@
 
 /* ── Design Tokens (CSS Custom Properties) ────────────────── */
 :root {
+  /* Bento Grid specific colors */
+  --bg-dark: #0b0b12;
+  --white-polar: #f5f7ff;
+  --lavender-electric: #9d4edd;
+  --blue-electric: #1630be;
+
   /* Color Palette — Midnight Clarity */
   --color-bg-primary: #0e1525;
   --color-bg-secondary: #131b2e;
@@ -379,7 +385,8 @@ button {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: var(--color-bg-primary);
+  background-color: #0b0b12;
+  background: linear-gradient(135deg, rgba(11, 11, 18, 0.96), rgba(7, 7, 12, 0.98));
 }
 
 /* ── Interactive Background Layers ────────────────────────── */
@@ -399,16 +406,9 @@ button {
   height: 130%;
   top: -15%;
   left: -15%;
-  background:
-    radial-gradient(ellipse 650px 650px at var(--mouse-x) var(--mouse-y),
-      rgba(22, 48, 190, 0.18) 0%,
-      transparent 70%),
-    radial-gradient(ellipse 800px 800px at calc(var(--mouse-x) + 15%) calc(var(--mouse-y) - 10%),
-      rgba(40, 69, 212, 0.10) 0%,
-      transparent 60%),
-    radial-gradient(ellipse 500px 500px at calc(100% - var(--mouse-x)) calc(100% - var(--mouse-y)),
-      rgba(74, 108, 247, 0.07) 0%,
-      transparent 60%);
+  background: radial-gradient(circle 500px at var(--mouse-x) var(--mouse-y),
+      rgba(157, 78, 221, 0.15) 0%,
+      transparent 70%);
   transition: all 0.15s ease-out;
 }
 
@@ -453,7 +453,7 @@ button {
   height: 400px;
   top: 10%;
   left: 15%;
-  background: radial-gradient(circle, var(--color-accent) 0%, transparent 70%);
+  background: radial-gradient(circle, var(--lavender-electric) 0%, transparent 70%);
   animation: float-orb-1 12s ease-in-out infinite;
 }
 
@@ -462,7 +462,7 @@ button {
   height: 300px;
   top: 60%;
   right: 10%;
-  background: radial-gradient(circle, var(--color-accent-secondary) 0%, transparent 70%);
+  background: radial-gradient(circle, var(--blue-electric) 0%, transparent 70%);
   animation: float-orb-2 15s ease-in-out infinite;
 }
 
@@ -471,7 +471,7 @@ button {
   height: 250px;
   bottom: 15%;
   left: 40%;
-  background: radial-gradient(circle, var(--color-cyan) 0%, transparent 70%);
+  background: radial-gradient(circle, var(--lavender-electric) 0%, transparent 70%);
   animation: float-orb-3 10s ease-in-out infinite;
 }
 
@@ -599,12 +599,21 @@ button {
   font-family: var(--font-mono);
   font-size: var(--fs-md);
   font-weight: 400;
-  color: var(--color-accent);
+  color: #9d4edd;
   letter-spacing: var(--ls-wide);
   margin-bottom: var(--space-md);
   opacity: 0;
-  transform: translateY(20px);
-  animation: hero-fade-up 0.8s var(--ease-out-expo) 0.5s forwards;
+  display: inline-block;
+}
+
+/* Typing Cursor Effect */
+.typing-cursor {
+  border-right: 2px solid #9d4edd;
+  animation: blink-caret 0.75s step-end infinite;
+}
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: #9d4edd; }
 }
 
 .hero-title {
@@ -616,8 +625,6 @@ button {
   color: var(--color-text-primary);
   margin-bottom: var(--space-lg);
   opacity: 0;
-  transform: translateY(30px);
-  animation: hero-fade-up 1s var(--ease-out-expo) 0.7s forwards;
 }
 
 .hero-title .title-highlight {
@@ -635,9 +642,9 @@ button {
   left: 0;
   width: 100%;
   height: 2px;
-  background: linear-gradient(90deg, var(--color-accent), var(--color-cyan));
+  background: #9d4edd;
   border-radius: 2px;
-  opacity: 0.4;
+  opacity: 0.7;
 }
 
 /* Subtitle */
@@ -650,8 +657,6 @@ button {
   max-width: 600px;
   margin-bottom: var(--space-3xl);
   opacity: 0;
-  transform: translateY(25px);
-  animation: hero-fade-up 1s var(--ease-out-expo) 0.9s forwards;
 }
 
 /* CTA Group */
@@ -661,7 +666,7 @@ button {
   gap: var(--space-md);
   opacity: 0;
   transform: translateY(25px);
-  animation: hero-fade-up 1s var(--ease-out-expo) 1.1s forwards;
+  transition: opacity 0.8s var(--ease-out-expo), transform 0.8s var(--ease-out-expo);
 }
 
 .btn {
@@ -688,7 +693,7 @@ button {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-secondary));
+  background: #1630be;
   opacity: 0;
   transition: opacity var(--transition-fast);
   border-radius: inherit;
@@ -717,9 +722,10 @@ button {
 }
 
 .btn--ghost:hover {
-  color: var(--color-text-primary);
-  border-color: rgba(255, 255, 255, 0.15);
-  background: var(--color-bg-glass-hover);
+  color: #ffffff;
+  border-color: #1630be;
+  background: #1630be;
+  box-shadow: 0 10px 30px rgba(22, 48, 190, 0.4);
   transform: translateY(-2px);
 }
 
@@ -804,7 +810,7 @@ button {
   height: 350px;
   border-radius: 50%;
   background: radial-gradient(circle,
-      rgba(22, 48, 190, 0.10) 0%,
+      rgba(157, 78, 221, 0.10) 0%,
       transparent 70%);
   pointer-events: none;
   z-index: 9999;
@@ -920,152 +926,396 @@ button {
 }
 
 
-/* =========================================
-   Sección Acerca de Mí - Estilos Generales
-   ========================================= */
-.about-section {
+/* ==========================================================================
+   SECCIÓN BENTO GRID "SOBRE MÍ"
+   ========================================================================== */
+.about-bento-section {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(3rem, 6vw, 6rem) clamp(1rem, 3vw, 2.5rem);
+  background-color: #0b0b12;
+  background: linear-gradient(135deg, rgba(11, 11, 18, 0.96), rgba(7, 7, 12, 0.98));
+  position: relative; /* Obligatorio para que el canvas se posicione bien */
+  overflow: hidden;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Configuración de la rejilla para pantallas grandes (Desktop) */
+.bento-grid {
+  width: 100%;
+  max-width: 1100px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: minmax(220px, 1fr);
+  gap: clamp(1rem, 2vw, 1.5rem);
+  align-items: stretch;
   position: relative;
-  background-color: #050810;
-  /* Azul muy oscuro, casi negro */
-  padding: 120px 20px;
-  font-family: 'Inter', 'Roboto', sans-serif;
-  overflow: hidden;
-}
-
-/* Capas de fondo interactivas */
-.about-bg {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.about-bg::before {
-  content: '';
-  position: absolute;
-  width: 130%;
-  height: 130%;
-  top: -15%;
-  left: -15%;
-  background:
-    radial-gradient(ellipse 650px 650px at var(--about-mouse-x, 50%) var(--about-mouse-y, 50%),
-      rgba(0, 240, 255, 0.12) 0%,
-      transparent 70%),
-    radial-gradient(ellipse 800px 800px at calc(var(--about-mouse-x, 50%) + 15%) calc(var(--about-mouse-y, 50%) - 10%),
-      rgba(40, 69, 212, 0.08) 0%,
-      transparent 60%),
-    radial-gradient(ellipse 500px 500px at calc(100% - var(--about-mouse-x, 50%)) calc(100% - var(--about-mouse-y, 50%)),
-      rgba(0, 240, 255, 0.05) 0%,
-      transparent 60%);
-  transition: all 0.15s ease-out;
-}
-
-.about-grid {
-  position: absolute;
-  inset: 0;
   z-index: 1;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-  background-size: 80px 80px;
-  mask-image: radial-gradient(ellipse 70% 60% at var(--about-mouse-x, 50%) var(--about-mouse-y, 50%),
-      black 0%,
-      transparent 100%);
-  -webkit-mask-image: radial-gradient(ellipse 70% 60% at var(--about-mouse-x, 50%) var(--about-mouse-y, 50%),
-      black 0%,
-      transparent 100%);
-  opacity: 0.4;
-  transition: mask-image 0.1s ease-out;
-  pointer-events: none;
 }
 
-.about-noise {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  opacity: 0.25;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events: none;
+/* Estilo base para todas las tarjetas (Hereda la estética oscura y fina) */
+.bento-card {
+  background: linear-gradient(145deg, rgba(11, 11, 18, 0.95), rgba(17, 17, 28, 0.9));
+  cursor: pointer;
+  border: 1px solid rgba(157, 78, 221, 0.18);
+  border-radius: 20px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  position: relative;
+  overflow: hidden;
+  min-height: 220px;
+  height: 100%;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.about-vignette {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  background: radial-gradient(ellipse 80% 80% at 50% 50%,
-      transparent 30%,
-      rgba(5, 8, 16, 0.6) 100%);
-  pointer-events: none;
+/* Efecto hover interactivo: brilla con tu azul y lavanda */
+.bento-card:hover {
+  border-color: var(--lavender-electric);
+  box-shadow: 0 0 0 1px rgba(157, 78, 221, 0.35), 0 0 20px rgba(157, 78, 221, 0.25), 0 16px 40px rgba(22, 48, 190, 0.2);
+  transform: translateY(-3px);
 }
 
-#about-particles {
-  position: absolute;
-  inset: 0;
-  z-index: 4;
-  pointer-events: none;
+/* Encabezados internos de las tarjetas */
+.card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
 }
 
-.about-container {
-  max-width: 1200px;
-  margin: 0 auto;
+.card-header h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--white-polar);
+  margin: 0;
+}
+
+.card-tag {
+  font-family: 'Space Grotesk', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  color: var(--lavender-electric);
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   CONFIGURACIÓN DE TAMAÑOS ASIMÉTRICOS (BENTO)
+   ========================================================================== */
+.card-large {
+  grid-column: span 2;
+  grid-row: span 2;
+  justify-content: center;
+  gap: 0.25rem;
+  padding-top: 0.7rem;
+  padding-bottom: 0.7rem;
+}
+
+.card-vertical {
+  grid-column: span 1;
+  grid-row: span 2;
+  min-height: 360px;
+  padding-top: 0.7rem;
+  padding-bottom: 0.7rem;
+  gap: 0.25rem;
+  justify-content: center;
+}
+
+.card-profile {
+  /* Reducir altura para que se ajuste al contenido y respete el padding interno */
+  min-height: 0;
+  padding-top: 0.6rem;
+  padding-bottom: 0.6rem;
+  gap: 0.15rem;
+}
+
+.card-experience {
+  min-height: 270px;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  gap: 0.15rem;
+}
+
+.card-medium {
+  grid-column: span 2;
+  grid-row: span 1;
+  justify-content: center;
+  gap: 1.2rem;
+}
+
+.card-small {
+  grid-column: span 1;
+  grid-row: span 1;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ==========================================================================
+   DISEÑO INTERNO DE CONTENIDOS
+   ========================================================================== */
+/* Texto de tu Biografía */
+.bio-text {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: #b0b3c1; /* Gris suave premium para lectura cómoda */
+  font-weight: 300;
+  margin: 0;
+}
+
+/* CONTENEDOR CON SCROLL INTERNO (Tarjeta Experiencia) */
+.scroll-timeline {
+  margin-top: 0;
+  overflow-y: auto;
+  max-height: 260px;
+
+  min-height: 0;
+  padding-right: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1 1 auto;
+  align-self: stretch;
+}
+
+/* Estilización premium de la barra de scroll */
+.scroll-timeline::-webkit-scrollbar {
+  width: 4px;
+}
+.scroll-timeline::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scroll-timeline::-webkit-scrollbar-thumb {
+  background: rgba(22, 48, 190, 0.4); /* Tu azul eléctrico sutil */
+  border-radius: 10px;
+}
+.scroll-timeline::-webkit-scrollbar-thumb:hover {
+  background: var(--lavender-electric); /* Brilla en lavanda al interactuar */
+}
+
+/* Elementos de la línea de tiempo */
+.timeline-item {
+  border-left: 2px solid var(--blue-electric);
+  padding-left: 1rem;
+  position: relative;
+}
+
+.timeline-date {
+  font-family: 'Space Grotesk', monospace;
+  font-size: 0.8rem;
+  color: var(--lavender-electric);
+}
+
+.timeline-item h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0.2rem 0 0.4rem 0;
+  color: var(--white-polar);
+}
+
+.timeline-item p {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #8c8fa3;
+}
+
+/* Etiquetas del Stack Técnico */
+.tech-tags-container {
   display: flex;
   flex-wrap: wrap;
+  gap: 0.75rem;
   align-items: center;
-  gap: 60px;
-  position: relative;
-  z-index: 10;
-}
-
-.about-left,
-.about-right {
-  flex: 1;
-  min-width: 320px;
-}
-
-/* =========================================
-   Columna Izquierda - Foto y Aura
-   ========================================= */
-.about-left {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  perspective: 1000px;
-}
-
-.image-wrapper {
-  position: relative;
+  justify-content: flex-start;
   width: 100%;
-  max-width: 450px;
-  display: flex;
-  justify-content: center;
+  overflow: visible;
 }
 
-/* Aura difuminada detrás de la silueta */
-.aura {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 350px;
-  height: 350px;
-  background: radial-gradient(circle, rgba(0, 240, 255, 0.35) 0%, rgba(0, 240, 255, 0) 65%);
+.tech-tag {
+  background: rgba(22, 48, 190, 0.1);
+  border: 1px solid rgba(22, 48, 190, 0.3);
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  color: #d1d4e5;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  white-space: nowrap;
+  line-height: 1;
+  min-width: fit-content;
+  flex-shrink: 0;
+  position: relative;
   z-index: 1;
-  filter: blur(25px);
-  border-radius: 50%;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-.profile-silhouette {
-  position: relative;
+.bento-card.card-medium .tech-tag:hover,
+.bento-card.card-medium .tech-tag:focus-visible {
+  /* Tarjeta 03: hover oscuro con brillo violeta */
+  background: #121826;
+  color: white;
+  border-color: transparent;
+  box-shadow:
+    0 0 0 1px rgba(157, 78, 221, 0.35),
+    0 0 18px rgba(157, 78, 221, 0.6),
+    0 0 42px rgba(157, 78, 221, 0.28),
+    0 10px 24px rgba(22, 48, 190, 0.18);
+  transform: translateY(-2px);
+  font-weight: bold;
+  outline: none;
+}
+
+
+.tech-tag i,
+.tech-tag svg {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1em;
+  height: 1em;
+  color: inherit;
+  transform-origin: center;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.tech-tag:hover {
+  /* invertido: hover oscuro */
+  background: #121826;
+  color: white;
+  border-color: rgba(143, 0, 255, 0.35);
+  box-shadow: 0 4px 20px rgba(143, 0, 255, 0.6);
+  transform: translateY(-2px);
+  font-weight: bold;
+}
+
+.tech-tag:hover i,
+.tech-tag:hover svg {
+  transform: scale(1.05);
+  color: var(--white-polar);
+}
+
+
+/* Módulo KPI */
+.kpi-display {
+  text-align: center;
+}
+.kpi-number {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--white-polar);
+  line-height: 1;
+  background: linear-gradient(135deg, var(--white-polar), var(--lavender-electric));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.kpi-label {
+  display: block;
+  font-size: 0.8rem;
+  color: #8c8fa3;
+  margin-top: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN (Colapso automático para móviles)
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .bento-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: minmax(220px, auto);
+  }
+
+  .card-large,
+  .card-medium {
+    grid-column: span 2;
+  }
+
+  .card-vertical,
+  .card-small {
+    grid-column: span 1;
+  }
+
+  .card-vertical {
+    min-height: 220px;
+  }
+}
+
+@media (max-width: 700px) {
+  .about-bento-section {
+    margin: 0;
+    padding: clamp(2rem, 5vw, 4rem) 1rem;
+    border-radius: 0;
+  }
+
+  .bento-grid {
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+    gap: 1rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .bento-card {
+    padding: 1.25rem;
+  }
+
+  .card-large,
+  .card-vertical,
+  .card-medium,
+  .card-small {
+    grid-column: span 1;
+    grid-row: span 1;
+  }
+
+  .scroll-timeline {
+    max-height: 220px;
+  }
+
+  .card-vertical {
+    min-height: auto;
+  }
+
+  .bio-text {
+    font-size: 0.98rem;
+  }
+}
+
+
+
+/* Efecto seguimiento del raton •	Fondo de Red o Constelaciones (Canvas)*/
+
+
+
+
+/* Reglas específicas para el fondo interactivo */
+#constellation-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  z-index: 2;
-  transition: transform 0.15s ease-out;
-  /* Sombra sutil para despegar la silueta del fondo */
-  filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.15));
-  mix-blend-mode: lighten;
+  height: 100%;
+  z-index: 0;          /* Al fondo de todo */
+  pointer-events: none; /* Permite hacer clic y seleccionar texto sobre él */
 }
 
-/* Scroll Reveal / Aparición con degradado suave */
+/* ==========================================================================
+   SCROLL REVEAL UTILITIES
+   ========================================================================== */
 .reveal-fade-in {
   opacity: 0;
   transform: translateY(40px);
@@ -1080,131 +1330,4 @@ button {
   opacity: 1;
   transform: translateY(0);
   filter: blur(0);
-}
-
-/* =========================================
-   Columna Derecha - Tarjeta Glassmorphism
-   ========================================= */
-.glass-card {
-  position: relative;
-  background: rgba(15, 23, 42, 0.5);
-  /* Fondo semitransparente */
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 24px;
-  padding: 50px;
-  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6);
-  overflow: hidden;
-}
-
-/* Efecto de seguimiento de luz azul (Glow) */
-.glass-card::before {
-  content: "";
-  position: absolute;
-  top: var(--y, 0);
-  left: var(--x, 0);
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(0, 240, 255, 0.1) 0%, transparent 60%);
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-
-.glass-card:hover::before {
-  opacity: 1;
-}
-
-/* Contenido interno de la tarjeta */
-.card-logo {
-  position: relative;
-  z-index: 1;
-  height: 60px;
-  margin-bottom: 24px;
-
-}
-
-.card-title {
-  position: relative;
-  z-index: 1;
-  font-size: 2.8rem;
-  font-weight: 700;
-  color: #ffffff;
-  margin-bottom: 25px;
-  letter-spacing: -0.5px;
-}
-
-/* Línea de acento debajo del título */
-.card-title::after {
-  content: "";
-  display: block;
-  width: 70px;
-  height: 4px;
-  background: #00f0ff;
-  margin-top: 15px;
-  border-radius: 2px;
-  box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
-}
-
-.card-text {
-  position: relative;
-  z-index: 1;
-  font-size: 1.1rem;
-  line-height: 1.8;
-  color: #a0aec0;
-  /* Gris claro */
-  margin-bottom: 40px;
-}
-
-/* =========================================
-   Etiquetas de Tecnologías (Tags)
-   ========================================= */
-.tech-tags {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.tech-tag {
-  background: rgba(0, 240, 255, 0.05);
-  color: #00f0ff;
-  border: 1px solid rgba(0, 240, 255, 0.2);
-  padding: 10px 20px;
-  border-radius: 50px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  cursor: default;
-}
-
-.tech-tag:hover {
-  background: rgba(0, 240, 255, 0.15);
-  border-color: #00f0ff;
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(0, 240, 255, 0.25);
-}
-
-/* =========================================
-   Responsive Design
-   ========================================= */
-@media (max-width: 992px) {
-  .about-container {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .card-title::after {
-    margin: 15px auto 0 auto;
-    /* Centrar línea de acento */
-  }
-
-  .tech-tags {
-    justify-content: center;
-  }
 }

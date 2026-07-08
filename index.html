@@ -50,8 +50,8 @@
             <ul class="nav-links" id="navLinks" role="menubar">
                 <li role="none"><a href="#hero" class="nav-link active" role="menuitem">Inicio</a></li>
                 <li role="none"><a href="#about" class="nav-link" role="menuitem">Sobre mí</a></li>
-                <li role="none"><a href="#projects" class="nav-link" role="menuitem">Proyectos</a></li>
                 <li role="none"><a href="#skills" class="nav-link" role="menuitem">Skills</a></li>
+                <li role="none"><a href="#projects" class="nav-link" role="menuitem">Proyectos</a></li>
                 <li role="none"><a href="#contact" class="nav-link" role="menuitem">Contacto</a></li>
             </ul>
 
@@ -134,51 +134,90 @@
                 </a>
             </div>
         </div>
-
-        <!-- Scroll indicator -->
-        <div class="hero-scroll-indicator" aria-hidden="true">
-            <span class="scroll-text">Scroll</span>
-            <div class="scroll-line"></div>
-        </div>
     </section>
 
-    <!-- Sección Acerca de Mí -->
-    <section id="about" class="about-section">
-        <!-- Background layers -->
-        <div class="about-bg" aria-hidden="true"></div>
-        <div class="about-grid" aria-hidden="true"></div>
-        <div class="about-noise" aria-hidden="true"></div>
-        <div class="about-vignette" aria-hidden="true"></div>
+    <!-- Sección Acerca de Mí (Bento Grid) -->
+    <section id="about" class="about-bento-section">
+        <!-- Coloca esto dentro de tu sección, preferiblemente antes del contenido de texto -->
+        <canvas id="constellation-canvas"></canvas>
 
-        <!-- Particle canvas para sección about -->
-        <canvas id="about-particles" aria-hidden="true"></canvas>
-        <div class="about-container">
-
-            <!-- Columna Izquierda: Foto con Aura y Paralaje -->
-            <div class="about-left reveal-fade-in">
-                <div class="image-wrapper" id="parallax-wrapper">
-                    <div class="aura"></div>
-                    <!-- Asegúrate de que la ruta de la imagen sea correcta -->
-                    <img src="assets/48a.png" alt="Mi Silueta" class="profile-silhouette" id="parallax-img">
+        <!-- Contenedor principal de la rejilla Bento -->
+        <div class="bento-grid">
+        
+            <!-- TARJETA 1: Manifiesto / Bio (Tamaño Grande) -->
+            <article class="bento-card card-large card-profile reveal-fade-in" style="transition-delay: 0.1s;">
+                <div class="card-header">
+                    <span class="card-tag">01 // PROFILE</span>
+                    <h2>Acerca de mí</h2>
                 </div>
-            </div>
+                <p class="bio-text">
+                    Hola, tengo interés por el estudio y el aprendizaje permanente. Me considero una persona con capacidad organizativa, analítica y de supervisión con especial atención al mínimo detalle. También soy dinámico y ordenado; me gusta el trabajo en equipo cuando es necesario, alcanzando un perfil radio en telecomunicaciones participando en múltiples proyectos.
+                </p>
+            </article>
 
-            <!-- Columna Derecha: Tarjeta Glassmorphism -->
-            <div class="about-right reveal-fade-in" style="transition-delay: 0.2s;">
-                <div class="glass-card" id="glow-card">
-                    <!-- Reemplaza con la ruta real de tu logo -->
-                    <img src="assets/Logo_Design.png" alt="Logo" class="card-logo">
-
-                    <h2 class="card-title">Acerca de Mí</h2>
-
-                    <p class="card-text">
-                        Hola tengo interés por el estudio y el aprendizaje permanente, me considero una persona con
-                        capacidad organizativa, analítica y de supervisión con especial atención al mínimo detalle,
-                        también soy dinámico y ordenado, me gusta el trabajo en equipo cuando es necesario, alcanzando
-                        un perfil radio en telecomunicaciones participando en múltiples proyectos.
-                    </p>
+            <!-- TARJETA 2: Experiencia con Scroll Interno (Tamaño Alargado) -->
+            <article class="bento-card card-vertical card-experience reveal-fade-in" style="transition-delay: 0.2s;">
+                <div class="card-header">
+                    <span class="card-tag">02 // TIMELINE</span>
+                    <h2>Experiencia</h2>
                 </div>
-            </div>
+                
+                <!-- Contenedor con scroll interno para tu experiencia ampliada -->
+                <div class="scroll-timeline">
+                    <div class="timeline-item">
+                        <span class="timeline-date">2024 — 2026</span>
+                        <h3>Técnico Drive Test Telecomunicaciones</h3>
+                        <p>Estudios de cobertura y pruebas funcionales para el desempeño de los KPIs sobre nodos de la Red móvil para todos los operadores.
+                           Realización medidas de calidad y toma de cobertura de servicio sobre redes de telefonía móvil y datos.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="timeline-date">2023 — 2024</span>
+                        <h3>Técnico de Pruebas Mobile</h3>
+                        <p>QA tester Senior de teléfonos de escritorio en laboratorio, jaula y caja de Faraday. Ejecución de casos de prueba manuales
+                            para testeo de funcionalidades de radio y aplicaciones en nuevos equipos y test de regresión para terminales ya en el mercado. 
+                            Actualizaciones de firmware y traceo de SIMs.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="timeline-date">2022 — 2023</span>
+                        <h3>Técnico Drive Test Telecomunicaciones</h3>
+                        <p>Estudios de cobertura en sede cliente, realización de medidas indoor EVs y clúster outdoor.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="timeline-date">2015 — 2022</span>
+                        <h3>Técnico Drive Test Telecomunicaciones</h3>
+                        <p>Estudios de cobertura y pruebas funcionales sobre nodos de la Red móvil para todos los operadores.</p>
+                    </div>
+                </div>
+            </article>
+
+            <!-- TARJETA 4: Micro-módulo de KPI / Detalle (Pequeña) -->
+            <article class="bento-card card-small reveal-fade-in" style="transition-delay: 0.3s;">
+                <div class="card-header">
+                    <span class="card-tag">04 // STATUS</span>
+                </div>
+                <div class="kpi-display">
+                    <span class="kpi-number">+10</span>
+                    <span class="kpi-label">Años de Experiencia</span>
+                </div>
+            </article>
+
+            <!-- TARJETA 3: Stack Tecnológico / Herramientas (Mediana) -->
+            <article class="bento-card card-medium reveal-fade-in" style="transition-delay: 0.4s;">
+                <div class="card-header">
+                    <span class="card-tag">03 // CORE TECH</span>
+                    <h2>Especialidades</h2>
+                </div>
+                <div class="tech-tags-container">
+                    <button type="button" class="tech-tag btn-electrico">Radiofrecuencia</button>
+                    <button type="button" class="tech-tag btn-electrico">Telecomunicaciones</button>
+                    <button type="button" class="tech-tag btn-electrico">TEMS Investigation</button>
+                    <button type="button" class="tech-tag btn-electrico">5G NSA y SA</button>
+                    <button type="button" class="tech-tag btn-electrico">Diseño UI/UX</button>
+                    <button type="button" class="tech-tag btn-electrico">Testing Web</button>
+                    <button type="button" class="tech-tag btn-electrico">Desarrollo Web</button>
+                    <button type="button" class="tech-tag btn-electrico">Agentes Copilot IA</button>
+                </div>
+            </article>
 
         </div>
     </section>

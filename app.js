@@ -14,8 +14,6 @@
   const cursorGlow = document.getElementById('cursorGlow');
   const heroSection = document.getElementById('hero');
   const aboutSection = document.getElementById('about');
-  const canvas = document.getElementById('hero-particles');
-  const aboutCanvas = document.getElementById('about-particles');
   const orbs = document.querySelectorAll('.hero-orb');
 
   // ── State ───────────────────────────────────────────────
@@ -65,14 +63,7 @@
     document.documentElement.style.setProperty('--mouse-x-norm', normX.toFixed(3));
     document.documentElement.style.setProperty('--mouse-y-norm', normY.toFixed(3));
 
-    // Update about section mouse tracking CSS vars (relative to section)
-    if (aboutSection) {
-      const aboutRect = aboutSection.getBoundingClientRect();
-      const aboutMouseX = mouseX - aboutRect.left;
-      const aboutMouseY = mouseY - aboutRect.top;
-      aboutSection.style.setProperty('--about-mouse-x', `${aboutMouseX}px`);
-      aboutSection.style.setProperty('--about-mouse-y', `${aboutMouseY}px`);
-    }
+    // (About section mouse variables tracking removed)
 
     // Update cursor glow position
     if (cursorGlow && !isTouch) {
@@ -91,6 +82,171 @@
 
     rafId = requestAnimationFrame(animateLoop);
   }
+
+    // ══════════════════════════════════════════════════════════
+  //  2. BENTO CONSTELLATION CANVAS & TYPEWRITER HELPERS
+  // ══════════════════════════════════════════════════════════
+
+  function initConstellationCanvas() {
+    const constellationCanvas = document.getElementById('constellation-canvas');
+    if (!constellationCanvas) return;
+    const ctx = constellationCanvas.getContext('2d');
+    const mouseArea = document.querySelector('.about-bento-section');
+    if (!mouseArea) return;
+
+    const config = {
+      particleCount: 100,      
+      connectionDist: 120,     
+      mouseDist: 180,          
+      particleColor: '#9d4edd', // --lavender-electric
+      lineColorSrc: '#1630be'   // --blue-electric
+    };
+
+    let particles = [];
+    let mouse = { x: null, y: null };
+
+    function resizeCanvas() {
+      constellationCanvas.width = mouseArea.clientWidth;
+      constellationCanvas.height = mouseArea.clientHeight;
+      initParticles();
+    }
+
+    class BentoParticle {
+      constructor() {
+        this.x = Math.random() * constellationCanvas.width;
+        this.y = Math.random() * constellationCanvas.height;
+        this.vx = (Math.random() - 0.5) * 0.8;
+        this.vy = (Math.random() - 0.5) * 0.8;
+        this.radius = Math.random() * 2 + 1.5;
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+
+        if (this.x < 0 || this.x > constellationCanvas.width) this.vx *= -1;
+        if (this.y < 0 || this.y > constellationCanvas.height) this.vy *= -1;
+
+        if (mouse.x !== null && mouse.y !== null) {
+          let dx = mouse.x - this.x;
+          let dy = mouse.y - this.y;
+          let dist = Math.sqrt(dx * dx + dy * dy);
+          
+          if (dist < config.mouseDist) {
+            let force = (config.mouseDist - dist) / config.mouseDist;
+            this.x += (dx / dist) * force * 0.6;
+            this.y += (dy / dist) * force * 0.6;
+          }
+        }
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = config.particleColor;
+        ctx.fill();
+      }
+    }
+
+    function initParticles() {
+      particles = [];
+      const count = constellationCanvas.width < 768 ? config.particleCount / 2 : config.particleCount;
+      for (let i = 0; i < count; i++) {
+        particles.push(new BentoParticle());
+      }
+    }
+
+    function drawLines() {
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          let dx = particles[i].x - particles[j].x;
+          let dy = particles[i].y - particles[j].y;
+          let dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < config.connectionDist) {
+            let alpha = (1 - dist / config.connectionDist) * 0.25;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(22, 48, 190, ${alpha})`; 
+            ctx.lineWidth = 0.8;
+            ctx.stroke();
+          }
+        }
+
+        if (mouse.x !== null && mouse.y !== null) {
+          let dxMouse = particles[i].x - mouse.x;
+          let dyMouse = particles[i].y - mouse.y;
+          let distMouse = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse);
+
+          if (distMouse < config.mouseDist) {
+            let alphaMouse = (1 - distMouse / config.mouseDist) * 0.4;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(mouse.x, mouse.y);
+            ctx.strokeStyle = `rgba(22, 48, 190, ${alphaMouse})`;
+            ctx.lineWidth = 1.2;
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, constellationCanvas.width, constellationCanvas.height);
+      particles.forEach(p => { p.update(); p.draw(); });
+      drawLines();
+      requestAnimationFrame(animate);
+    }
+
+    mouseArea.addEventListener('mousemove', (e) => {
+      const rect = constellationCanvas.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
+    });
+
+    mouseArea.addEventListener('mouseleave', () => {
+      mouse.x = null;
+      mouse.y = null;
+    });
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    animate();
+  }
+
+  function typeElement(element, speed, callback) {
+    const originalHTML = element.innerHTML.trim().replace(/\s+/g, ' ');
+    element.innerHTML = '';
+    element.style.opacity = '1';
+    element.style.visibility = 'visible';
+    element.classList.add('typing-cursor');
+    
+    let index = 0;
+    function type() {
+      if (index < originalHTML.length) {
+        if (originalHTML.charAt(index) === '<') {
+          const closingTagIndex = originalHTML.indexOf('>', index);
+          if (closingTagIndex !== -1) {
+            element.innerHTML = originalHTML.substring(0, closingTagIndex + 1);
+            index = closingTagIndex + 1;
+          } else {
+            element.innerHTML = originalHTML.substring(0, index + 1);
+            index++;
+          }
+        } else {
+          element.innerHTML = originalHTML.substring(0, index + 1);
+          index++;
+        }
+        setTimeout(type, speed);
+      } else {
+        element.classList.remove('typing-cursor');
+        if (callback) callback();
+      }
+    }
+    type();
+  }
+
 
   // ══════════════════════════════════════════════════════════
   //  2. PARTICLE SYSTEM — Floating dots with mouse interaction
@@ -400,33 +556,34 @@
 
   function initTypingEffect() {
     const greeting = document.querySelector('.hero-greeting');
-    if (!greeting) return;
+    const title = document.querySelector('.hero-title');
+    const subtitle = document.querySelector('.hero-subtitle');
+    const ctaGroup = document.querySelector('.hero-cta-group');
 
-    const text = greeting.textContent;
-    greeting.textContent = '';
-    greeting.style.opacity = '1';
-    greeting.style.transform = 'none';
-    greeting.style.animation = 'none';
-    greeting.style.borderRight = '2px solid var(--color-accent)';
+    if (!greeting || !title || !subtitle) return;
 
-    let i = 0;
-    const speed = 60;
-    const delay = 800; // Wait for badge animation
+    // First hide everything
+    greeting.style.opacity = '0';
+    title.style.opacity = '0';
+    subtitle.style.opacity = '0';
+    if (ctaGroup) {
+      ctaGroup.style.opacity = '0';
+      ctaGroup.style.transform = 'translateY(25px)';
+    }
+
+    const delay = 800;
 
     setTimeout(() => {
-      function type() {
-        if (i < text.length) {
-          greeting.textContent += text.charAt(i);
-          i++;
-          setTimeout(type, speed);
-        } else {
-          // Blink cursor then remove
-          setTimeout(() => {
-            greeting.style.borderRight = 'none';
-          }, 2000);
-        }
-      }
-      type();
+      typeElement(greeting, 40, () => {
+        typeElement(title, 30, () => {
+          typeElement(subtitle, 15, () => {
+            if (ctaGroup) {
+              ctaGroup.style.opacity = '1';
+              ctaGroup.style.transform = 'translateY(0)';
+            }
+          });
+        });
+      });
     }, delay);
   }
 
@@ -449,33 +606,14 @@
     // Touch detection
     detectTouch();
 
-    // Particle system
-    let particleSystem = null;
-    let aboutParticleSystem = null;
-    if (canvas) {
-      particleSystem = new ParticleSystem(canvas);
-    }
-    if (aboutCanvas) {
-      aboutParticleSystem = new TriangleParticleSystem(aboutCanvas);
-    }
+    // Constellation Canvas for Bento Grid
+    initConstellationCanvas();
 
     // Mouse tracking
     window.addEventListener('mousemove', onMouseMove, { passive: true });
 
     // Start animation loop
     animateLoop();
-
-    // Particle animation loop (separate from cursor for clarity)
-    function animateParticles() {
-      if (particleSystem) {
-        particleSystem.update();
-      }
-      if (aboutParticleSystem) {
-        aboutParticleSystem.update();
-      }
-      requestAnimationFrame(animateParticles);
-    }
-    animateParticles();
 
     // Navigation events
     if (navToggle) {
@@ -500,14 +638,6 @@
     window.addEventListener('resize', () => {
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(() => {
-        if (particleSystem) {
-          particleSystem.resize();
-          particleSystem.init();
-        }
-        if (aboutParticleSystem) {
-          aboutParticleSystem.resize();
-          aboutParticleSystem.init();
-        }
         closeMobileMenu();
       }, 250);
     });
@@ -542,11 +672,23 @@
     // ══════════════════════════════════════════════════════════
     const revealElements = document.querySelectorAll('.reveal-fade-in');
     if (revealElements.length > 0) {
+      let hasScrolled = false;
+      window.addEventListener('scroll', () => {
+        hasScrolled = true;
+      }, { once: true, passive: true });
+
       const revealObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('reveal-active');
-            revealObserver.unobserve(entry.target);
+          if (hasScrolled) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('reveal-active');
+            } else {
+              entry.target.classList.remove('reveal-active');
+            }
+          } else {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('reveal-active');
+            }
           }
         });
       }, {
@@ -565,55 +707,3 @@
   }
 })();
 
-
-document.addEventListener('DOMContentLoaded', () => {
-
-  // --- EFECTO 1: Paralaje en la Silueta ---
-  const parallaxImg = document.getElementById('parallax-img');
-  const parallaxWrapper = document.getElementById('parallax-wrapper');
-
-  if (parallaxWrapper && parallaxImg) {
-    parallaxWrapper.addEventListener('mousemove', (e) => {
-      const rect = parallaxWrapper.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-
-      // Ajusta el divisor (25) para hacer el movimiento más o menos sutil
-      const moveX = (x - centerX) / 25;
-      const moveY = (y - centerY) / 25;
-
-      // Aplicar transformación a la imagen
-      parallaxImg.style.transform = `translate(${moveX}px, ${moveY}px)`;
-    });
-
-    // Reiniciar posición al sacar el ratón
-    parallaxWrapper.addEventListener('mouseleave', () => {
-      parallaxImg.style.transform = `translate(0px, 0px)`;
-      parallaxImg.style.transition = `transform 0.5s ease-out`; // Retorno suave
-    });
-
-    // Quitar la transición durante el movimiento para que no tenga "lag"
-    parallaxWrapper.addEventListener('mouseenter', () => {
-      parallaxImg.style.transition = `transform 0.1s ease-out`;
-    });
-  }
-
-  // --- EFECTO 2: Seguimiento de Luz Azul (Mouse-Tracking Glow) ---
-  const glowCard = document.getElementById('glow-card');
-
-  if (glowCard) {
-    glowCard.addEventListener('mousemove', (e) => {
-      const rect = glowCard.getBoundingClientRect();
-      // Calcular la posición del ratón relativa a la tarjeta
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-
-      // Actualizar variables CSS para mover el pseudo-elemento ::before
-      glowCard.style.setProperty('--x', `${x}px`);
-      glowCard.style.setProperty('--y', `${y}px`);
-    });
-  }
-});
