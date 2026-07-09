@@ -387,6 +387,7 @@ button {
   overflow: hidden;
   background-color: #0b0b12;
   background: linear-gradient(135deg, rgba(11, 11, 18, 0.96), rgba(7, 7, 12, 0.98));
+  contain: content;
 }
 
 /* ── Interactive Background Layers ────────────────────────── */
@@ -738,6 +739,11 @@ button {
   will-change: left, top;
 }
 
+body:has(#about:hover) .cursor-glow {
+  opacity: 0;
+  pointer-events: none;
+}
+
 /* ══════════════════════════════════════════════════════════
    RESPONSIVE
    ══════════════════════════════════════════════════════════ */
@@ -860,6 +866,7 @@ button {
   border: none;
   border-radius: 0;
   box-shadow: none;
+  contain: content;
 }
 
 /* Configuración de la rejilla para pantallas grandes (Desktop) */
@@ -893,13 +900,14 @@ button {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, border-color, box-shadow;
 }
 
 /* Efecto hover interactivo: brilla con tu azul y lavanda */
 .bento-card:hover {
   border-color: var(--lavender-electric);
   box-shadow: 0 0 0 1px rgba(157, 78, 221, 0.35), 0 0 20px rgba(157, 78, 221, 0.25), 0 16px 40px rgba(22, 48, 190, 0.2);
-  transform: translateY(-3px) scaleY(1.02);
+  transform: scaleY(1.03);
 }
 
 /* Encabezados internos de las tarjetas */

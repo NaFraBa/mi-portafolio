@@ -231,7 +231,11 @@
       mouse.y = null;
     });
 
-    window.addEventListener('resize', resizeCanvas);
+    let resizeTimeoutCanvas;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeoutCanvas);
+      resizeTimeoutCanvas = setTimeout(resizeCanvas, 150);
+    });
     resizeCanvas();
     canvasObserver.observe(mouseArea);
   }
