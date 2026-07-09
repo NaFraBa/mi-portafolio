@@ -58,10 +58,12 @@
     const normY = mouseY / window.innerHeight;
 
     // Update CSS custom properties for background gradients
-    document.documentElement.style.setProperty('--mouse-x', `${mouseX}px`);
-    document.documentElement.style.setProperty('--mouse-y', `${mouseY}px`);
-    document.documentElement.style.setProperty('--mouse-x-norm', normX.toFixed(3));
-    document.documentElement.style.setProperty('--mouse-y-norm', normY.toFixed(3));
+    if (heroSection) {
+      heroSection.style.setProperty('--mouse-x', `${mouseX}px`);
+      heroSection.style.setProperty('--mouse-y', `${mouseY}px`);
+      heroSection.style.setProperty('--mouse-x-norm', normX.toFixed(3));
+      heroSection.style.setProperty('--mouse-y-norm', normY.toFixed(3));
+    }
 
     // (About section mouse variables tracking removed)
 
@@ -185,12 +187,38 @@
       }
     }
 
+    let isCanvasVisible = false;
+    let animationFrameId = null;
+
     function animate() {
+      if (!isCanvasVisible) {
+        if (animationFrameId) {
+          cancelAnimationFrame(animationFrameId);
+          animationFrameId = null;
+        }
+        return;
+      }
       ctx.clearRect(0, 0, constellationCanvas.width, constellationCanvas.height);
       particles.forEach(p => { p.update(); p.draw(); });
       drawLines();
-      requestAnimationFrame(animate);
+      animationFrameId = requestAnimationFrame(animate);
     }
+
+    const canvasObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        isCanvasVisible = entry.isIntersecting;
+        if (isCanvasVisible) {
+          if (!animationFrameId) {
+            animate();
+          }
+        } else {
+          if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
+          }
+        }
+      });
+    }, { threshold: 0.05 });
 
     mouseArea.addEventListener('mousemove', (e) => {
       const rect = constellationCanvas.getBoundingClientRect();
@@ -205,7 +233,7 @@
 
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
-    animate();
+    canvasObserver.observe(mouseArea);
   }
 
   function typeElement(element, speed, callback) {
