@@ -312,15 +312,15 @@ button {
   background: rgba(255, 255, 255, 0.08);
 }
 
-/* CTA button in nav */
 .nav-cta {
   margin-left: var(--space-xs);
   padding: 8px 20px;
   font-family: var(--font-body);
   font-size: var(--fs-sm);
   font-weight: 500;
-  color: var(--color-bg-primary);
-  background: var(--color-text-primary);
+  color: var(--color-text-primary);
+  background: rgba(22, 48, 190, 0.1);
+  border: 1px solid rgba(22, 48, 190, 0.3);
   border-radius: var(--radius-pill);
   transition: all var(--transition-fast);
   white-space: nowrap;
@@ -419,8 +419,8 @@ button {
   inset: 0;
   z-index: 1;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
   background-size: 80px 80px;
   mask-image: radial-gradient(ellipse 70% 60% at var(--mouse-x) var(--mouse-y),
       black 0%,
@@ -428,7 +428,7 @@ button {
   -webkit-mask-image: radial-gradient(ellipse 70% 60% at var(--mouse-x) var(--mouse-y),
       black 0%,
       transparent 100%);
-  opacity: 0.5;
+  opacity: 0.8;
   transition: mask-image 0.1s ease-out;
 }
 
@@ -907,7 +907,7 @@ body:has(#about:hover) .cursor-glow {
 .bento-card:hover {
   border-color: var(--lavender-electric);
   box-shadow: 0 0 0 1px rgba(157, 78, 221, 0.35), 0 0 20px rgba(157, 78, 221, 0.25), 0 16px 40px rgba(22, 48, 190, 0.2);
-  transform: scaleY(1.03);
+  transform: scale(1.02);
 }
 
 /* Encabezados internos de las tarjetas */
