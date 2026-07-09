@@ -431,97 +431,7 @@ button {
   transition: mask-image 0.1s ease-out;
 }
 
-/* Floating orbs — parallax with mouse */
-.hero-orbs {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-}
 
-.hero-orb {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.45;
-  will-change: transform;
-  transition: transform 0.6s var(--ease-out-expo);
-}
-
-.hero-orb--1 {
-  width: 400px;
-  height: 400px;
-  top: 10%;
-  left: 15%;
-  background: radial-gradient(circle, var(--lavender-electric) 0%, transparent 70%);
-  animation: float-orb-1 12s ease-in-out infinite;
-}
-
-.hero-orb--2 {
-  width: 300px;
-  height: 300px;
-  top: 60%;
-  right: 10%;
-  background: radial-gradient(circle, var(--blue-electric) 0%, transparent 70%);
-  animation: float-orb-2 15s ease-in-out infinite;
-}
-
-.hero-orb--3 {
-  width: 250px;
-  height: 250px;
-  bottom: 15%;
-  left: 40%;
-  background: radial-gradient(circle, var(--lavender-electric) 0%, transparent 70%);
-  animation: float-orb-3 10s ease-in-out infinite;
-}
-
-@keyframes float-orb-1 {
-
-  0%,
-  100% {
-    transform: translate(0, 0) scale(1);
-  }
-
-  33% {
-    transform: translate(30px, -40px) scale(1.05);
-  }
-
-  66% {
-    transform: translate(-20px, 20px) scale(0.95);
-  }
-}
-
-@keyframes float-orb-2 {
-
-  0%,
-  100% {
-    transform: translate(0, 0) scale(1);
-  }
-
-  33% {
-    transform: translate(-40px, 30px) scale(0.95);
-  }
-
-  66% {
-    transform: translate(20px, -20px) scale(1.08);
-  }
-}
-
-@keyframes float-orb-3 {
-
-  0%,
-  100% {
-    transform: translate(0, 0) scale(1);
-  }
-
-  33% {
-    transform: translate(20px, 20px) scale(1.1);
-  }
-
-  66% {
-    transform: translate(-30px, -30px) scale(0.92);
-  }
-}
 
 /* Noise texture overlay */
 .hero-noise {
@@ -548,7 +458,7 @@ button {
   z-index: 5;
   background: radial-gradient(ellipse 80% 80% at 50% 50%,
       transparent 30%,
-      rgba(14, 21, 37, 0.6) 100%);
+      rgba(11, 11, 18, 0.6) 100%);
   pointer-events: none;
 }
 
@@ -693,8 +603,9 @@ button {
 }
 
 .btn--primary {
-  color: var(--color-bg-primary);
-  background: var(--color-text-primary);
+  color: var(--color-text-primary);
+  background: rgba(22, 48, 190, 0.1);
+  border: 1px solid rgba(22, 48, 190, 0.3);
 }
 
 .btn--primary::before {
@@ -724,8 +635,8 @@ button {
 
 .btn--ghost {
   color: var(--color-text-secondary);
-  border: 1px solid var(--color-border-glass);
-  background: var(--color-bg-glass);
+  border: 1px solid rgba(22, 48, 190, 0.3);
+  background: rgba(22, 48, 190, 0.1);
   backdrop-filter: blur(10px);
 }
 
@@ -901,10 +812,7 @@ button {
     justify-content: center;
   }
 
-  .hero-orb {
-    filter: blur(60px);
-    opacity: 0.2;
-  }
+
 
   .cursor-glow {
     display: none;
@@ -1257,11 +1165,11 @@ button {
     grid-auto-rows: minmax(220px, auto);
   }
 
-  .card-large,
-  .card-medium {
+  .card-large {
     grid-column: span 2;
   }
 
+  .card-medium,
   .card-vertical,
   .card-small {
     grid-column: span 1;

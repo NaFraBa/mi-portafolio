@@ -14,7 +14,7 @@
   const cursorGlow = document.getElementById('cursorGlow');
   const heroSection = document.getElementById('hero');
   const aboutSection = document.getElementById('about');
-  const orbs = document.querySelectorAll('.hero-orb');
+
 
   // ── State ───────────────────────────────────────────────
   let mouseX = window.innerWidth / 2;
@@ -71,14 +71,7 @@
       cursorGlow.style.top = `${mouseY}px`;
     }
 
-    // Parallax orbs — each orb moves at different speed
-    const parallaxFactors = [0.03, -0.02, 0.015];
-    orbs.forEach((orb, i) => {
-      const factor = parallaxFactors[i] || 0.02;
-      const offsetX = (mouseX - window.innerWidth / 2) * factor;
-      const offsetY = (mouseY - window.innerHeight / 2) * factor;
-      orb.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
-    });
+
 
     rafId = requestAnimationFrame(animateLoop);
   }
