@@ -739,7 +739,8 @@ button {
   will-change: left, top;
 }
 
-body:has(#about:hover) .cursor-glow {
+body:has(#about:hover) .cursor-glow,
+body:has(#skills:hover) .cursor-glow {
   opacity: 0;
   pointer-events: none;
 }
