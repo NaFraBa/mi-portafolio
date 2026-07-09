@@ -906,7 +906,7 @@ body:has(#about:hover) .cursor-glow {
 .bento-card:hover {
   border-color: var(--lavender-electric);
   box-shadow: 0 0 0 1px rgba(157, 78, 221, 0.35), 0 0 20px rgba(157, 78, 221, 0.25), 0 16px 40px rgba(22, 48, 190, 0.2);
-  transform: translateY(-3px);
+  transform: translateY(-3px) !important;
 }
 
 /* Encabezados internos de las tarjetas */
