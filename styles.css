@@ -1185,7 +1185,14 @@ body:has(#skills:hover) .cursor-glow {
   }
 
   .scroll-timeline {
-    max-height: 260px;
+    max-height: none;
+    overflow-y: visible;
+    flex: none;
+  }
+
+  .tech-tag {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.85rem;
   }
 }
 
@@ -1218,7 +1225,14 @@ body:has(#skills:hover) .cursor-glow {
   }
 
   .scroll-timeline {
-    max-height: 240px;
+    max-height: none;
+    overflow-y: visible;
+    flex: none;
+  }
+
+  .tech-tag {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.75rem;
   }
 
   .card-vertical {
