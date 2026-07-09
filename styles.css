@@ -1170,6 +1170,7 @@ body:has(#skills:hover) .cursor-glow {
 
   .bento-card {
     min-height: auto;
+    height: auto;
   }
 
   .card-large,
@@ -1214,6 +1215,7 @@ body:has(#skills:hover) .cursor-glow {
   .bento-card {
     padding: 1.25rem;
     min-height: auto;
+    height: auto;
   }
 
   .card-large,
