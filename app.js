@@ -623,6 +623,174 @@
     }, { once: true });
   }
 
+  function initSkillsLoader() {
+    const boton = document.getElementById('btn-cargar');
+    const contenedores = document.querySelectorAll('.skills-section .skill-container');
+    if (!boton || contenedores.length === 0) return;
+
+    let estanLlenas = false;
+
+    function animarContador(elemento, inicio, fin, duracion) {
+      const inicioTiempo = performance.now();
+
+      function actualizar(tiempoActual) {
+        const tiempoTranscurrido = tiempoActual - inicioTiempo;
+        const progreso = Math.min(tiempoTranscurrido / duracion, 1);
+        const progresoSuave = 1 - Math.pow(1 - progreso, 3); 
+        const valorActual = Math.floor(progresoSuave * (fin - inicio) + inicio);
+        
+        elemento.textContent = `${valorActual}%`;
+
+        if (progreso < 1) {
+          requestAnimationFrame(actualizar);
+        }
+      }
+
+      requestAnimationFrame(actualizar);
+    }
+
+    boton.addEventListener('click', () => {
+      if (!estanLlenas) {
+        contenedores.forEach((contenedor, indice) => {
+          setTimeout(() => {
+            const barra = contenedor.querySelector('.progress-bar-fill');
+            const texto = contenedor.querySelector('.skill-porcentaje');
+            const destino = parseInt(barra.getAttribute('data-porcentaje'));
+
+            barra.style.width = `${destino}%`;
+            animarContador(texto, 0, destino, 1500); 
+          }, indice * 100); 
+        });
+        
+        boton.textContent = 'Resetear Habilidades';
+        estanLlenas = true;
+        
+      } else {
+        [...contenedores].reverse().forEach((contenedor, indice) => {
+          setTimeout(() => {
+            const barra = contenedor.querySelector('.progress-bar-fill');
+            const texto = contenedor.querySelector('.skill-porcentaje');
+            const actual = parseInt(barra.getAttribute('data-porcentaje'));
+
+            barra.style.width = '0%';
+            animarContador(texto, actual, 0, 1000); 
+          }, indice * 80);
+        });
+        
+        boton.textContent = 'Cargar Habilidades';
+        estanLlenas = false;
+      }
+    });
+  }
+
+  function initMatrixTrail() {
+    const canvas = document.getElementById('matrix-trail-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const skillsSection = document.getElementById('skills');
+    if (!skillsSection) return;
+
+    let chars = [];
+    const characters = ['0', '1', '<', '>', '/', '{', '}', ';', '[', ']', '=>', '++', 'js', 'css', 'git'];
+
+    function resize() {
+      canvas.width = skillsSection.clientWidth;
+      canvas.height = skillsSection.clientHeight;
+    }
+
+    class CodeChar {
+      constructor(x, y) {
+        this.x = x + (Math.random() - 0.5) * 30;
+        this.y = y + (Math.random() - 0.5) * 30;
+        this.char = characters[Math.floor(Math.random() * characters.length)];
+        this.alpha = 1.0;
+        this.decay = Math.random() * 0.03 + 0.015;
+        this.size = Math.random() * 6 + 11;
+        this.color = Math.random() > 0.5 ? '#9d4edd' : '#1630be';
+        this.vx = (Math.random() - 0.5) * 0.4;
+        this.vy = (Math.random() - 0.5) * 0.4 - 0.4;
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.alpha -= this.decay;
+      }
+
+      draw() {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, this.alpha);
+        ctx.font = `600 ${this.size}px 'Space Grotesk', monospace`;
+        ctx.fillStyle = this.color;
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = this.color;
+        ctx.fillText(this.char, this.x, this.y);
+        ctx.restore();
+      }
+    }
+
+    skillsSection.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      if (Math.random() < 0.6) {
+        chars.push(new CodeChar(x, y));
+      }
+    });
+
+    let active = false;
+    let animationFrameId = null;
+
+    function animate() {
+      if (!active) {
+        if (animationFrameId) {
+          cancelAnimationFrame(animationFrameId);
+          animationFrameId = null;
+        }
+        return;
+      }
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      for (let i = chars.length - 1; i >= 0; i--) {
+        const c = chars[i];
+        c.update();
+        if (c.alpha <= 0) {
+          chars.splice(i, 1);
+        } else {
+          c.draw();
+        }
+      }
+      
+      animationFrameId = requestAnimationFrame(animate);
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        active = entry.isIntersecting;
+        if (active) {
+          if (!animationFrameId) {
+            animate();
+          }
+        } else {
+          if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
+          }
+        }
+      });
+    }, { threshold: 0.05 });
+
+    let resizeTimeoutMatrix;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeoutMatrix);
+      resizeTimeoutMatrix = setTimeout(resize, 150);
+    });
+
+    resize();
+    observer.observe(skillsSection);
+  }
+
   // ══════════════════════════════════════════════════════════
   //  INIT — Bootstrap everything
   // ══════════════════════════════════════════════════════════
@@ -633,6 +801,10 @@
 
     // Constellation Canvas for Bento Grid
     initConstellationCanvas();
+
+    // Skills logic and code trail matrix canvas
+    initSkillsLoader();
+    initMatrixTrail();
 
     // Mouse tracking
     window.addEventListener('mousemove', onMouseMove, { passive: true });

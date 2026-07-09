@@ -1265,3 +1265,162 @@ body:has(#about:hover) .cursor-glow {
   transform: translateY(0);
   filter: blur(0);
 }
+
+/* ==========================================================================
+   SECCIÓN SKILLS
+   ========================================================================== */
+.skills-section {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(3rem, 6vw, 6rem) clamp(1rem, 3vw, 2.5rem);
+  background-color: #0b0b12;
+  background: linear-gradient(135deg, rgba(11, 11, 18, 0.96), rgba(7, 7, 12, 0.98));
+  position: relative;
+  overflow: hidden;
+  contain: content;
+}
+
+.skills-container-wrapper {
+  width: 100%;
+  max-width: 1100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.skills-section .section-title {
+  text-align: center;
+  margin-bottom: clamp(2rem, 4vw, 3.5rem);
+}
+
+.skills-section .section-title h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 500;
+  color: var(--white-polar);
+  margin-top: 0.5rem;
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  margin-bottom: 3rem;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .skills-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.skill-card {
+  background: linear-gradient(145deg, rgba(11, 11, 18, 0.95), rgba(17, 17, 28, 0.9));
+  border: 1px solid rgba(157, 78, 221, 0.18);
+  border-radius: 20px;
+  padding: 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, border-color, box-shadow;
+}
+
+.skill-card:hover {
+  border-color: var(--lavender-electric);
+  box-shadow: 0 0 0 1px rgba(157, 78, 221, 0.35), 0 0 20px rgba(157, 78, 221, 0.25), 0 16px 40px rgba(22, 48, 190, 0.2);
+  transform: translateY(-3px) !important;
+}
+
+.skills-list {
+  margin-top: 1.5rem;
+  width: 100%;
+}
+
+.skills-action {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+/* --- ESTILO DEL BOTÓN --- */
+.btn-electrico {
+  padding: 14px 28px;
+  background: rgba(22, 48, 190, 0.1);
+  color: var(--white-polar);
+  border: 1px solid rgba(22, 48, 190, 0.3);
+  border-radius: 16px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  box-shadow: 0 4px 15px rgba(22, 48, 190, 0.1);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: 'Space Grotesk', sans-serif;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.btn-electrico:hover {
+  background: var(--color-accent);
+  border-color: transparent;
+  color: white;
+  box-shadow: 0 4px 20px rgba(143, 0, 255, 0.6);
+  transform: translateY(-2px);
+}
+
+/* --- ESTILOS DE LAS BARRAS --- */
+.skill-container {
+  margin-bottom: 25px;
+  width: 100%;
+}
+
+.skill-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  color: #d1d4e5;
+  font-weight: 500;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.progress-bar-bg {
+  width: 100%;
+  height: 12px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  background: linear-gradient(90deg, rgba(22, 48, 190, 1) 0%, rgba(143, 0, 255, 1) 100%);
+  box-shadow: 0 0 14px rgba(143, 0, 255, 0.5);
+  transition: width 1.5s cubic-bezier(0.1, 1, 0.1, 1);
+  will-change: width;
+}
+
+#matrix-trail-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
