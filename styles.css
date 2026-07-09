@@ -1172,14 +1172,12 @@ body:has(#skills:hover) .cursor-glow {
     min-height: auto;
   }
 
-  .card-large {
-    grid-column: span 2;
-  }
-
+  .card-large,
   .card-medium,
   .card-vertical,
   .card-small {
     grid-column: span 1;
+    grid-row: span 1;
   }
 
   .card-vertical {
