@@ -1186,9 +1186,9 @@ body:has(#skills:hover) .cursor-glow {
   }
 
   .scroll-timeline {
-    max-height: none;
-    overflow-y: visible;
-    flex: none;
+    max-height: 260px;
+    overflow-y: auto;
+    flex: 1 1 auto;
   }
 
   .tech-tag {
@@ -1227,9 +1227,9 @@ body:has(#skills:hover) .cursor-glow {
   }
 
   .scroll-timeline {
-    max-height: none;
-    overflow-y: visible;
-    flex: none;
+    max-height: 230px;
+    overflow-y: auto;
+    flex: 1 1 auto;
   }
 
   .tech-tag {
