@@ -1684,7 +1684,10 @@ body:has(#contact:hover) .cursor-glow {
   border-radius: 6px;
   font-size: 0.8rem;
   font-weight: 500;
+  transition: all 0.25s ease;
+  cursor: pointer;
 }
+
 
 /* Enlaces de GitHub */
 .repo-links {
@@ -1705,12 +1708,22 @@ body:has(#contact:hover) .cursor-glow {
   border-radius: 6px;
   text-decoration: none;
   font-size: 0.85rem;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
 }
 
-.repo-btn:hover {
-  background-color: var(--blue-electric);
-  border-color: var(--blue-electric);
+.tech-tags span:hover,
+.repo-btn:hover,
+.external-site:hover {
+  background: #121826 !important;
+  color: white !important;
+  border-color: transparent !important;
+  box-shadow:
+    0 0 0 1px rgba(157, 78, 221, 0.35),
+    0 0 18px rgba(157, 78, 221, 0.6),
+    0 0 42px rgba(157, 78, 221, 0.28),
+    0 10px 24px rgba(22, 48, 190, 0.18) !important;
+  transform: translateY(-2px) !important;
+  font-weight: bold;
 }
 
 .external-site {
@@ -1718,11 +1731,6 @@ body:has(#contact:hover) .cursor-glow {
   background-color: rgba(157, 78, 221, 0.1);
   border-color: rgba(157, 78, 221, 0.3);
   font-weight: 600;
-}
-
-.external-site:hover {
-  background-color: var(--lavender-electric);
-  border-color: var(--lavender-electric);
 }
 
 .extra-info {
@@ -1805,20 +1813,18 @@ body:has(#contact:hover) .cursor-glow {
   }
   .tabs-content {
     padding: 25px 20px;
-    max-height: 280px; /* limits height like Card 02 timeline */
-    overflow-y: auto;  /* scroll is vertical */
   }
-  .tabs-content::-webkit-scrollbar {
-    width: 4px;
+  .tabs-header-window::-webkit-scrollbar {
+    height: 4px;
   }
-  .tabs-content::-webkit-scrollbar-track {
+  .tabs-header-window::-webkit-scrollbar-track {
     background: transparent;
   }
-  .tabs-content::-webkit-scrollbar-thumb {
+  .tabs-header-window::-webkit-scrollbar-thumb {
     background: rgba(22, 48, 190, 0.4);
     border-radius: 10px;
   }
-  .tabs-content::-webkit-scrollbar-thumb:hover {
+  .tabs-header-window::-webkit-scrollbar-thumb:hover {
     background: var(--lavender-electric);
   }
   .content-panel h3 {
@@ -1836,21 +1842,6 @@ body:has(#contact:hover) .cursor-glow {
   }
   .tabs-content {
     padding: 20px 15px;
-    max-height: 280px; /* limits height like Card 02 timeline */
-    overflow-y: auto;  /* scroll is vertical */
-  }
-  .tabs-content::-webkit-scrollbar {
-    width: 4px;
-  }
-  .tabs-content::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  .tabs-content::-webkit-scrollbar-thumb {
-    background: rgba(22, 48, 190, 0.4);
-    border-radius: 10px;
-  }
-  .tabs-content::-webkit-scrollbar-thumb:hover {
-    background: var(--lavender-electric);
   }
   .content-panel h3 {
     font-size: 1.2rem;
