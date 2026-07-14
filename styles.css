@@ -13,6 +13,7 @@
   --white-polar: #f5f7ff;
   --lavender-electric: #9d4edd;
   --blue-electric: #1630be;
+  --card-bg: #11111c;
 
   /* Color Palette — Midnight Clarity */
   --color-bg-primary: #0e1525;
@@ -856,6 +857,7 @@ body:has(#skills:hover) .cursor-glow {
   width: 100%;
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: clamp(3rem, 6vw, 6rem) clamp(1rem, 3vw, 2.5rem);
@@ -1429,4 +1431,339 @@ body:has(#skills:hover) .cursor-glow {
   height: 100%;
   z-index: 0;
   pointer-events: none;
+}
+
+/* ── Section Title Labels ─────────────────────────────────── */
+.section-title-container {
+  width: 100%;
+  max-width: 1100px;
+  margin-bottom: 2.5rem;
+  z-index: 2;
+  text-align: left;
+}
+
+.section-title-container.projects-width {
+  max-width: 1200px;
+}
+
+.section-title-label {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 4vw, 3rem);
+  font-weight: 700;
+  color: var(--lavender-electric);
+  text-shadow: 0 0 20px rgba(157, 78, 221, 0.15);
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+/* ==========================================================================
+   SECCIÓN PROYECTOS (ESTILO WINDOWS & CANVAS MESH)
+   ========================================================================== */
+.projects-section {
+  background-color: var(--bg-dark);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(4rem, 8vw, 8rem) clamp(1rem, 3vw, 2.5rem);
+  font-family: var(--font-body);
+  color: var(--white-polar);
+  position: relative;
+  overflow: hidden;
+  contain: content;
+}
+
+#projects-mesh-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.projects-container {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  gap: 50px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* LADO IZQUIERDO: Caja de Perfil Reducida y Centrada */
+.profile-aside {
+  flex: 0 0 280px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.avatar-wrapper {
+  position: relative;
+  width: 240px;
+  height: 300px;
+  border-radius: 16px;
+  padding: 2px;
+  background: linear-gradient(135deg, var(--blue-electric), rgba(157, 78, 221, 0.3));
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: visible;
+}
+
+.profile-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 14px;
+  background-color: var(--bg-dark);
+  /* Custom blue-electric glowing aura that expands contour and head */
+  filter: drop-shadow(0 0 15px rgba(22, 48, 190, 0.65))
+          drop-shadow(0 -8px 25px rgba(22, 48, 190, 0.55));
+  animation: aura-glow-pulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes aura-glow-pulse {
+  0% {
+    filter: drop-shadow(0 0 10px rgba(22, 48, 190, 0.5))
+            drop-shadow(0 -5px 20px rgba(22, 48, 190, 0.4));
+  }
+  100% {
+    filter: drop-shadow(0 0 25px rgba(22, 48, 190, 0.95))
+            drop-shadow(0 -15px 35px rgba(22, 48, 190, 0.75));
+  }
+}
+
+/* --- EFECTO HOVER DE LA TARJETA --- */
+.project-card {
+  flex: 1;
+  background-color: var(--card-bg);
+  border: 1px solid rgba(157, 78, 221, 0.2);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  min-height: 480px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  position: relative;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.project-card:hover {
+  border-color: var(--lavender-electric);
+  box-shadow: 0 0 0 1px rgba(157, 78, 221, 0.35), 
+              0 0 20px rgba(157, 78, 221, 0.25), 
+              0 16px 40px rgba(22, 48, 190, 0.2);
+  transform: translateY(-3px) !important;
+}
+
+/* Cabecera de Pestañas Superiores Estilo Ventana de Sistema */
+.tabs-header-window {
+  display: flex;
+  background-color: rgba(11, 11, 18, 0.8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 12px 16px 0 16px;
+  gap: 6px;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  color: rgba(245, 247, 255, 0.5);
+  padding: 12px 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  bottom: -1px;
+}
+
+.tab-btn:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+  color: var(--white-polar);
+}
+
+.tab-btn.active {
+  background-color: var(--card-bg);
+  color: var(--white-polar);
+  border: 1px solid rgba(157, 78, 221, 0.2);
+  border-bottom: 1px solid var(--card-bg);
+  box-shadow: 0 -4px 12px rgba(157, 78, 221, 0.1);
+}
+
+.tab-btn.active .tab-icon {
+  color: var(--lavender-electric);
+}
+
+.tab-icon {
+  font-size: 1rem;
+  color: rgba(245, 247, 255, 0.4);
+  transition: color 0.2s;
+}
+
+/* Contenedor del Cuerpo de Contenidos */
+.tabs-content {
+  flex: 1;
+  padding: 35px 40px;
+}
+
+.content-panel {
+  display: none;
+  animation: slideDown 0.3s ease-out forwards;
+}
+
+.content-panel.active {
+  display: block;
+}
+
+.content-panel h3 {
+  font-size: 1.65rem;
+  color: var(--white-polar);
+  margin: 0 0 4px 0;
+}
+
+.content-panel .subtitle {
+  color: var(--lavender-electric);
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-bottom: 22px;
+}
+
+.content-panel .description {
+  line-height: 1.6;
+  color: rgba(245, 247, 255, 0.85);
+  margin-bottom: 25px;
+}
+
+/* Etiquetas Técnicas (Tags) */
+.tech-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 25px;
+}
+
+.tech-tags span {
+  background-color: rgba(22, 48, 190, 0.15);
+  border: 1px solid rgba(22, 48, 190, 0.35);
+  color: var(--white-polar);
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* Enlaces de GitHub */
+.repo-links {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.repo-btn, .external-site {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--white-polar);
+  padding: 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.repo-btn:hover {
+  background-color: var(--blue-electric);
+  border-color: var(--blue-electric);
+}
+
+.external-site {
+  color: var(--white-polar);
+  background-color: rgba(157, 78, 221, 0.1);
+  border-color: rgba(157, 78, 221, 0.3);
+  font-weight: 600;
+}
+
+.external-site:hover {
+  background-color: var(--lavender-electric);
+  border-color: var(--lavender-electric);
+}
+
+.extra-info {
+  font-size: 0.9rem;
+  color: rgba(245, 247, 255, 0.6);
+  border-left: 3px solid var(--blue-electric);
+  padding-left: 12px;
+}
+
+/* Logo preview display container */
+.logo-display-container {
+  margin-top: 20px;
+}
+
+.logo-label {
+  font-size: 0.95rem;
+  color: rgba(245, 247, 255, 0.6);
+  margin-bottom: 10px;
+}
+
+.logo-preview-box {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo-embedded-img {
+  max-height: 140px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 10px rgba(157, 78, 221, 0.15));
+}
+
+/* Animación de apertura */
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Maquetación adaptable para pantallas medianas/móviles */
+@media (max-width: 900px) {
+  .projects-container {
+    flex-direction: column;
+    gap: 30px;
+  }
+  .profile-aside {
+    flex: none;
+    width: 100%;
+  }
+  .avatar-wrapper {
+    width: 220px;
+    height: 275px;
+  }
+  .tabs-header-window {
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  .repo-links {
+    grid-template-columns: 1fr;
+  }
 }

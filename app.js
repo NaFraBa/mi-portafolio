@@ -792,6 +792,166 @@
   }
 
   // ══════════════════════════════════════════════════════════
+  //  2c. PROJECTS SECTION TABS & ANIMATED MESH WARP
+  // ══════════════════════════════════════════════════════════
+
+  function initProjectsTabs() {
+    const tabButtons = document.querySelectorAll(".tab-btn");
+    const contentPanels = document.querySelectorAll(".content-panel");
+
+    tabButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        // 1. Limpiar estado activo de los botones superiores anteriores
+        tabButtons.forEach(btn => btn.classList.remove("active"));
+        
+        // 2. Ocultar todos los paneles informativos del cuerpo
+        contentPanels.forEach(panel => panel.classList.remove("active"));
+
+        // 3. Conceder el foco activo al botón pulsado
+        button.classList.add("active");
+
+        // 4. Mapear y abrir el panel correspondiente mediante su data-attribute
+        const targetTabId = button.getAttribute("data-tab");
+        const targetPanel = document.getElementById(targetTabId);
+        
+        if (targetPanel) {
+          targetPanel.classList.add("active");
+        }
+      });
+    });
+  }
+
+  function initProjectsMeshWarp() {
+    const canvas = document.getElementById('projects-mesh-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const projectsSection = document.getElementById('projects');
+    if (!projectsSection) return;
+
+    let width, height;
+    let points = [];
+    const cols = 8;
+    const rows = 6;
+    let time = 0;
+
+    function resize() {
+      width = projectsSection.clientWidth;
+      height = projectsSection.clientHeight;
+      canvas.width = width;
+      canvas.height = height;
+      initMesh();
+    }
+
+    function initMesh() {
+      points = [];
+      const colDist = width / (cols - 1);
+      const rowDist = height / (rows - 1);
+
+      for (let r = 0; r < rows; r++) {
+        points[r] = [];
+        for (let c = 0; c < cols; c++) {
+          points[r][c] = {
+            x: c * colDist,
+            y: r * rowDist,
+            ox: c * colDist,
+            oy: r * rowDist,
+            vx: Math.random() * Math.PI * 2,
+            vy: Math.random() * Math.PI * 2,
+            speed: 0.015 + Math.random() * 0.01
+          };
+        }
+      }
+    }
+
+    function update() {
+      time += 0.5;
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const p = points[r][c];
+          const isEdge = (r === 0 || r === rows - 1 || c === 0 || c === cols - 1);
+          const range = isEdge ? 8 : 25; // smaller movement on boundaries to avoid canvas clipping
+          p.x = p.ox + Math.sin(time * p.speed + p.vx) * range;
+          p.y = p.oy + Math.cos(time * p.speed + p.vy) * range;
+        }
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, width, height);
+
+      // Draw mesh grid cells
+      for (let r = 0; r < rows - 1; r++) {
+        for (let c = 0; c < cols - 1; c++) {
+          const p0 = points[r][c];
+          const p1 = points[r][c+1];
+          const p2 = points[r+1][c+1];
+          const p3 = points[r+1][c];
+
+          // Draw cell borders
+          ctx.beginPath();
+          ctx.moveTo(p0.x, p0.y);
+          ctx.lineTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.lineTo(p3.x, p3.y);
+          ctx.closePath();
+
+          ctx.strokeStyle = 'rgba(157, 78, 221, 0.06)'; // lavender-electric lines
+          ctx.lineWidth = 0.8;
+          ctx.stroke();
+
+          // Draw diagonal lines for tri-mesh pattern
+          ctx.beginPath();
+          ctx.moveTo(p0.x, p0.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.strokeStyle = 'rgba(22, 48, 190, 0.04)'; // blue-electric diagonals
+          ctx.stroke();
+        }
+      }
+    }
+
+    let active = false;
+    let animationFrameId = null;
+
+    function animate() {
+      if (!active) {
+        if (animationFrameId) {
+          cancelAnimationFrame(animationFrameId);
+          animationFrameId = null;
+        }
+        return;
+      }
+      update();
+      draw();
+      animationFrameId = requestAnimationFrame(animate);
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        active = entry.isIntersecting;
+        if (active) {
+          if (!animationFrameId) {
+            animate();
+          }
+        } else {
+          if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
+          }
+        }
+      });
+    }, { threshold: 0.02 });
+
+    let resizeTimeoutMesh;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeoutMesh);
+      resizeTimeoutMesh = setTimeout(resize, 150);
+    });
+
+    resize();
+    observer.observe(projectsSection);
+  }
+
+  // ══════════════════════════════════════════════════════════
   //  INIT — Bootstrap everything
   // ══════════════════════════════════════════════════════════
 
@@ -805,6 +965,10 @@
     // Skills logic and code trail matrix canvas
     initSkillsLoader();
     initMatrixTrail();
+
+    // Projects tabs logic and mesh warp canvas
+    initProjectsTabs();
+    initProjectsMeshWarp();
 
     // Mouse tracking
     window.addEventListener('mousemove', onMouseMove, { passive: true });

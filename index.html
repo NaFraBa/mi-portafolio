@@ -25,7 +25,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <!-- Styles -->
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=1.1">
+    <!-- FontAwesome Icons for Projects Section -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
@@ -136,6 +138,11 @@
         <!-- Coloca esto dentro de tu sección, preferiblemente antes del contenido de texto -->
         <canvas id="constellation-canvas"></canvas>
 
+        <!-- Section Title Header -->
+        <div class="section-title-container">
+            <h2 class="section-title-label">About me</h2>
+        </div>
+
         <!-- Contenedor principal de la rejilla Bento -->
         <div class="bento-grid">
         
@@ -221,6 +228,10 @@
     <section id="skills" class="skills-section">
         <canvas id="matrix-trail-canvas"></canvas>
         <div class="skills-container-wrapper">
+            <!-- Section Title Header -->
+            <div class="section-title-container">
+                <h2 class="section-title-label">My Skills</h2>
+            </div>
             
             <div class="skills-grid">
                 <!-- Tarjeta 1: FrontEnd -->
@@ -415,8 +426,140 @@
         </div>
     </section>
 
+    <!-- Sección Proyectos -->
+    <section id="projects" class="projects-section">
+        <!-- Warp Mesh Canvas Background -->
+        <canvas id="projects-mesh-canvas"></canvas>
+
+        <!-- Section Title Header -->
+        <div class="section-title-container projects-width">
+            <h2 class="section-title-label">My Projects</h2>
+        </div>
+
+        <div class="projects-container">
+            
+            <!-- LADO IZQUIERDO: Foto de perfil destacada con aura blue-electric -->
+            <div class="profile-aside">
+                <div class="avatar-wrapper">
+                    <img src="./assets/foto_perfil.png" alt="Ignacio Fraile - Profesional IT" class="profile-img">
+                </div>
+            </div>
+
+            <!-- LADO DERECHO: Tarjeta con Pestañas en la Zona Superior (Estilo Windows) -->
+            <div class="project-card">
+                
+                <!-- Pestañas Superiores Estilo Windows -->
+                <div class="tabs-header-window">
+                    <button class="tab-btn active" data-tab="telecom">
+                        <i class="fa-solid fa-tower-cell tab-icon"></i> Telecomunicaciones
+                    </button>
+                    <button class="tab-btn" data-tab="frontend">
+                        <i class="fa-solid fa-code tab-icon"></i> Frontend Web
+                    </button>
+                    <button class="tab-btn" data-tab="testing">
+                        <i class="fa-solid fa-vial-circle-check tab-icon"></i> Testing & QA
+                    </button>
+                    <button class="tab-btn" data-tab="logos">
+                        <i class="fa-solid fa-bezier-curve tab-icon"></i> Diseño Logotipos
+                    </button>
+                </div>
+
+                <!-- Área de Contenidos de la Ventana -->
+                <div class="tabs-content">
+                    
+                    <!-- Panel 1: Telecomunicaciones -->
+                    <div class="content-panel active" id="telecom">
+                        <h3>Ingeniería de Telecomunicaciones y Radiofrecuencia</h3>
+                        <p class="subtitle">Estudios de Cobertura y Pruebas Funcionales</p>
+                        <p class="description">
+                            Participación activa en múltiples despliegues de infraestructura realizando análisis exhaustivos de cobertura con tecnología <strong>TEMS</strong> y optimización en entornos de Radiofrecuencia (RF) para Estaciones Base.
+                        </p>
+                        <div class="tech-tags">
+                            <span>TEMS / RF</span>
+                            <span>Estaciones Base</span>
+                            <span>HTTP / UDP</span>
+                            <span>VoNR / VoLTE</span>
+                            <span>CSFB / MOS</span>
+                        </div>
+                        <p class="extra-info"><i class="fa-solid fa-terminal"></i> Alta capacidad técnica para la inyección y ejecución de scripts funcionales sobre protocolos de red críticos (Ping, llamadas de voz y datos).</p>
+                    </div>
+
+                    <!-- Panel 2: Frontend -->
+                    <div class="content-panel" id="frontend">
+                        <h3>Desarrollo Frontend en la Nube</h3>
+                        <p class="subtitle">Evolución de Componentes e Interfaces en Antigravity IDE</p>
+                        <p class="description">
+                            Maquetación y desarrollo modular aplicando buenas prácticas de accesibilidad, lógica nativa y diseño adaptivo. Código optimizado directamente mediante flujos híbridos en la nube.
+                        </p>
+                        <div class="tech-tags">
+                            <span>HTML5 & CSS3 Semántico</span>
+                            <span>JavaScript (ES6+)</span>
+                            <span>Antigravity IDE</span>
+                            <span>GitHub Copilot</span>
+                            <span>Blackbox AI</span>
+                            <span>Vs Code</span>
+                        </div>
+                        <div class="repo-links">
+                            <a href="https://github.com" target="_blank" class="repo-btn"><i class="fa-brands fa-github"></i> mi-portafolio</a>
+                            <a href="https://nafraba.github.io/sunnyside.github.io/" target="_blank" class="repo-btn"><i class="fa-brands fa-github"></i> sunnyside.io</a>
+                            <a href="https://nafraba.github.io/huddle.github.io/" target="_blank" class="repo-btn"><i class="fa-brands fa-github"></i> huddle.io</a>
+                            <a href="https://nafraba.github.io/room.github.io/" target="_blank" class="repo-btn"><i class="fa-brands fa-github"></i> room.io</a>
+                        </div>
+                    </div>
+
+                    <!-- Panel 3: Testing -->
+                    <div class="content-panel" id="testing">
+                        <h3>Aseguramiento de Calidad y Control de Errores</h3>
+                        <p class="subtitle">Auditoría Integral de Aplicaciones Web Complejas</p>
+                        <p class="description">
+                            Ejecución y documentación de planes de pruebas rigurosos orientados a romper el software antes de producción. Análisis enfocado en la validación de formularios, consistencia visual y gestión de excepciones bajo flujos reales de usuario.
+                        </p>
+                        <div class="tech-tags">
+                            <span>Pruebas Funcionales</span>
+                            <span>Reporte de Bugs</span>
+                            <span>Exploratory Testing</span>
+                            <span>API & UI Validation</span>
+                        </div>
+                        <div class="test-target">
+                            <strong>Entorno de Prueba Evaluado de forma Exhaustiva:</strong> 
+                            <a href="https://justtestit.org" target="_blank" class="external-site">
+                                <i class="fa-solid fa-bug"></i> Plataforma Web Buggy Cars Rating <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.75rem;"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Panel 4: Diseño Logotipos -->
+                    <div class="content-panel" id="logos">
+                        <h3>Identidad Visual y Diseño Gráfico</h3>
+                        <p class="subtitle">Creación de Logotipos y Elementos de Marca</p>
+                        <p class="description">
+                            Desarrollo de conceptos visuales únicos y vectorización de logotipos adaptados a las necesidades de identidad de diferentes proyectos. Enfoque centrado en la versatilidad, escalabilidad y coherencia cromática.
+                        </p>
+                        <div class="tech-tags">
+                            <span>Diseño Vectorial</span>
+                            <span>Identidad de Marca</span>
+                            <span>Paletas de Color</span>
+                            <span>Figma / Illustrator</span>
+                            <span>Photoshop Cs</span>
+                        </div>
+                        
+                        <!-- Contenedor del Logo Integrado Directamente -->
+                        <div class="logo-display-container">
+                            <p class="logo-label"><i class="fa-solid fa-image"></i> Diseño Destacado:</p>
+                            <div class="logo-preview-box">
+                                <img src="./assets/Logo_Design.png" alt="Diseño de Logotipo Profesional" class="logo-embedded-img">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
     <!-- Scripts -->
-    <script src="app.js"></script>
+    <script src="app.js?v=1.1"></script>
 </body>
 
 </html>
