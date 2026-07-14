@@ -741,7 +741,9 @@ button {
 }
 
 body:has(#about:hover) .cursor-glow,
-body:has(#skills:hover) .cursor-glow {
+body:has(#skills:hover) .cursor-glow,
+body:has(#projects:hover) .cursor-glow,
+body:has(#contact:hover) .cursor-glow {
   opacity: 0;
   pointer-events: none;
 }
@@ -1504,12 +1506,12 @@ body:has(#skills:hover) .cursor-glow {
 
 .avatar-wrapper {
   position: relative;
-  width: 240px;
-  height: 300px;
-  border-radius: 16px;
-  padding: 2px;
-  background: linear-gradient(135deg, var(--blue-electric), rgba(157, 78, 221, 0.3));
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  width: 300px;
+  height: 375px;
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1519,12 +1521,13 @@ body:has(#skills:hover) .cursor-glow {
 .profile-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  border-radius: 14px;
-  background-color: var(--bg-dark);
-  /* Custom blue-electric glowing aura that expands contour and head */
-  filter: drop-shadow(0 0 15px rgba(22, 48, 190, 0.65))
-          drop-shadow(0 -8px 25px rgba(22, 48, 190, 0.55));
+  object-fit: contain;
+  border-radius: 0;
+  background-color: transparent;
+  outline: none; /* Prevents default browser focus ring */
+  /* Custom blue-electric glowing aura that contours the transparent silhouette precisely and rises over the head */
+  filter: drop-shadow(0 0 18px rgba(22, 48, 190, 0.7))
+          drop-shadow(0 -10px 30px rgba(22, 48, 190, 0.6));
   animation: aura-glow-pulse 4s ease-in-out infinite alternate;
 }
 
@@ -1745,25 +1748,125 @@ body:has(#skills:hover) .cursor-glow {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Maquetación adaptable para pantallas medianas/móviles */
+/* Maquetación adaptable para pantallas medianas/móviles (Solo Proyectos) */
 @media (max-width: 900px) {
+  .projects-section {
+    padding: 40px 15px;
+  }
   .projects-container {
     flex-direction: column;
     gap: 30px;
+  }
+  .project-card {
+    width: 100%;
   }
   .profile-aside {
     flex: none;
     width: 100%;
   }
   .avatar-wrapper {
-    width: 220px;
-    height: 275px;
+    width: 280px;
+    height: 350px;
   }
   .tabs-header-window {
     overflow-x: auto;
     white-space: nowrap;
+    padding: 8px 10px 0 10px;
+  }
+  .tab-btn {
+    padding: 10px 15px;
+    font-size: 0.85rem;
+  }
+  .tabs-content {
+    padding: 25px 20px;
+  }
+  .content-panel h3 {
+    font-size: 1.35rem;
   }
   .repo-links {
     grid-template-columns: 1fr;
   }
+}
+
+@media (max-width: 480px) {
+  .avatar-wrapper {
+    width: 240px;
+    height: 300px;
+  }
+  .tabs-content {
+    padding: 20px 15px;
+  }
+  .content-panel h3 {
+    font-size: 1.2rem;
+  }
+  .content-panel .subtitle {
+    margin-bottom: 15px;
+  }
+}
+
+/* ==========================================================================
+   SECCIÓN CONTACTO (UNDER CONSTRUCTION)
+   ========================================================================== */
+.contact-section {
+  background-color: var(--bg-dark);
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(4rem, 8vw, 8rem) clamp(1rem, 3vw, 2.5rem);
+  position: relative;
+  overflow: hidden;
+  contain: content;
+}
+
+.construction-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: linear-gradient(145deg, rgba(11, 11, 18, 0.95), rgba(17, 17, 28, 0.9));
+  border: 1px solid rgba(157, 78, 221, 0.18);
+  border-radius: 20px;
+  padding: 3.5rem 2.5rem;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: var(--shadow-elevated);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 1;
+}
+
+.construction-container:hover {
+  border-color: var(--lavender-electric);
+  box-shadow: 0 0 25px rgba(157, 78, 221, 0.25);
+}
+
+.construction-icon {
+  font-size: 3.8rem;
+  color: var(--lavender-electric);
+  margin-bottom: 1.5rem;
+  animation: construction-bounce 2s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 10px rgba(157, 78, 221, 0.4));
+}
+
+@keyframes construction-bounce {
+  0% { transform: translateY(0) rotate(0deg); }
+  100% { transform: translateY(-8px) rotate(8deg); }
+}
+
+.construction-container h3 {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  color: var(--white-polar);
+  margin-bottom: 0.8rem;
+}
+
+.construction-container p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+  margin: 0;
 }
