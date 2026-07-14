@@ -519,21 +519,20 @@ button {
 }
 
 /* Typing Cursor Effect */
-.typing-cursor {
-  border-right: 2px solid #9d4edd;
-  animation: blink-caret 0.75s step-end infinite;
+.typing-cursor-inline {
+  display: inline-block;
+  width: 2px;
+  height: 1.15em;
+  background-color: #9d4edd;
+  margin-left: 2px;
+  vertical-align: middle;
+  animation: blink-caret-inline 0.75s step-end infinite;
+  transform: translateY(-1px);
 }
 
-@keyframes blink-caret {
-
-  from,
-  to {
-    border-color: transparent
-  }
-
-  50% {
-    border-color: #9d4edd;
-  }
+@keyframes blink-caret-inline {
+  from, to { opacity: 0; }
+  50% { opacity: 1; }
 }
 
 .hero-title {
@@ -1595,8 +1594,19 @@ body:has(#contact:hover) .cursor-glow {
 }
 
 .tab-btn:hover {
-  background-color: rgba(255, 255, 255, 0.03);
-  color: var(--white-polar);
+  background: #121826 !important;
+  color: white !important;
+  box-shadow:
+    0 0 0 1px rgba(157, 78, 221, 0.35),
+    0 0 18px rgba(157, 78, 221, 0.6),
+    0 0 42px rgba(157, 78, 221, 0.28),
+    0 10px 24px rgba(22, 48, 190, 0.18);
+  transform: translateY(-2px);
+  outline: none;
+}
+
+.tab-btn:hover .tab-icon {
+  color: var(--lavender-electric) !important;
 }
 
 .tab-btn.active {
@@ -1759,6 +1769,15 @@ body:has(#contact:hover) .cursor-glow {
   }
   .project-card {
     width: 100%;
+    background: linear-gradient(145deg, rgba(11, 11, 18, 0.95), rgba(17, 17, 28, 0.9)) !important;
+    border: 1px solid rgba(157, 78, 221, 0.18) !important;
+    border-radius: 20px !important;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .project-card:hover {
+    border-color: var(--lavender-electric) !important;
+    box-shadow: 0 0 0 1px rgba(157, 78, 221, 0.35), 0 0 20px rgba(157, 78, 221, 0.25), 0 16px 40px rgba(22, 48, 190, 0.2) !important;
+    transform: translateY(-3px) !important;
   }
   .profile-aside {
     flex: none;
@@ -1809,7 +1828,7 @@ body:has(#contact:hover) .cursor-glow {
    ========================================================================== */
 .contact-section {
   background-color: var(--bg-dark);
-  min-height: 80vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1818,6 +1837,7 @@ body:has(#contact:hover) .cursor-glow {
   position: relative;
   overflow: hidden;
   contain: content;
+  box-sizing: border-box;
 }
 
 .construction-container {
@@ -1869,4 +1889,33 @@ body:has(#contact:hover) .cursor-glow {
   line-height: 1.6;
   color: var(--color-text-secondary);
   margin: 0;
+}
+
+@media (max-width: 768px) {
+  .contact-section {
+    min-height: 100vh;
+    padding: 60px 20px;
+  }
+  .construction-container {
+    padding: 2.5rem 1.5rem;
+  }
+  .construction-icon {
+    font-size: 3rem;
+  }
+  .construction-container h3 {
+    font-size: 1.4rem;
+  }
+  .construction-container p {
+    font-size: 0.88rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .contact-section {
+    min-height: 100vh;
+    padding: 40px 15px;
+  }
+  .construction-container {
+    padding: 2rem 1.25rem;
+  }
 }

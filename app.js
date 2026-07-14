@@ -245,7 +245,6 @@
     element.innerHTML = '';
     element.style.opacity = '1';
     element.style.visibility = 'visible';
-    element.classList.add('typing-cursor');
     
     let index = 0;
     function type() {
@@ -253,19 +252,17 @@
         if (originalHTML.charAt(index) === '<') {
           const closingTagIndex = originalHTML.indexOf('>', index);
           if (closingTagIndex !== -1) {
-            element.innerHTML = originalHTML.substring(0, closingTagIndex + 1);
             index = closingTagIndex + 1;
           } else {
-            element.innerHTML = originalHTML.substring(0, index + 1);
             index++;
           }
         } else {
-          element.innerHTML = originalHTML.substring(0, index + 1);
           index++;
         }
+        element.innerHTML = originalHTML.substring(0, index) + '<span class="typing-cursor-inline"></span>';
         setTimeout(type, speed);
       } else {
-        element.classList.remove('typing-cursor');
+        element.innerHTML = originalHTML;
         if (callback) callback();
       }
     }
