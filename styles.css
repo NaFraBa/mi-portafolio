@@ -1277,8 +1277,8 @@ body:has(#contact:hover) .cursor-glow {
   transform: translateY(40px);
   filter: blur(10px);
   transition: opacity 1.2s var(--ease-out-expo),
-    transform 1.2s var(--ease-out-expo),
-    filter 1.2s var(--ease-out-expo);
+              transform 1.2s var(--ease-out-expo),
+              filter 1.2s var(--ease-out-expo) !important;
   will-change: opacity, transform, filter;
 }
 
@@ -1286,6 +1286,13 @@ body:has(#contact:hover) .cursor-glow {
   opacity: 1;
   transform: translateY(0);
   filter: blur(0);
+  /* Switch to faster transition for hovers once revealed */
+  transition: opacity 1.2s var(--ease-out-expo),
+              transform 0.3s ease,
+              filter 1.2s var(--ease-out-expo),
+              border-color 0.3s ease,
+              box-shadow 0.3s ease,
+              background-color 0.3s ease !important;
 }
 
 /* ==========================================================================
@@ -1798,6 +1805,21 @@ body:has(#contact:hover) .cursor-glow {
   }
   .tabs-content {
     padding: 25px 20px;
+    max-height: 280px; /* limits height like Card 02 timeline */
+    overflow-y: auto;  /* scroll is vertical */
+  }
+  .tabs-content::-webkit-scrollbar {
+    width: 4px;
+  }
+  .tabs-content::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .tabs-content::-webkit-scrollbar-thumb {
+    background: rgba(22, 48, 190, 0.4);
+    border-radius: 10px;
+  }
+  .tabs-content::-webkit-scrollbar-thumb:hover {
+    background: var(--lavender-electric);
   }
   .content-panel h3 {
     font-size: 1.35rem;
@@ -1814,6 +1836,21 @@ body:has(#contact:hover) .cursor-glow {
   }
   .tabs-content {
     padding: 20px 15px;
+    max-height: 280px; /* limits height like Card 02 timeline */
+    overflow-y: auto;  /* scroll is vertical */
+  }
+  .tabs-content::-webkit-scrollbar {
+    width: 4px;
+  }
+  .tabs-content::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .tabs-content::-webkit-scrollbar-thumb {
+    background: rgba(22, 48, 190, 0.4);
+    border-radius: 10px;
+  }
+  .tabs-content::-webkit-scrollbar-thumb:hover {
+    background: var(--lavender-electric);
   }
   .content-panel h3 {
     font-size: 1.2rem;
