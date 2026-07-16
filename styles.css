@@ -1304,7 +1304,7 @@ body:has(#contact:hover) .cursor-glow {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: clamp(3rem, 5vw, 4.5rem) clamp(1rem, 3vw, 2.5rem) clamp(4rem, 7vw, 9rem);
+  padding: clamp(2.5rem, 4vw, 3.5rem) clamp(1rem, 3vw, 2.5rem) clamp(3rem, 5vw, 5rem);
   background-color: #0b0b12;
   background: linear-gradient(135deg, rgba(11, 11, 18, 0.96), rgba(7, 7, 12, 0.98));
   position: relative;
@@ -1326,7 +1326,7 @@ body:has(#contact:hover) .cursor-glow {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: clamp(1.5rem, 3vw, 2.5rem);
-  margin-bottom: 3rem;
+  margin-bottom: 1.5rem;
   width: 100%;
 }
 
@@ -1340,7 +1340,7 @@ body:has(#contact:hover) .cursor-glow {
   background: linear-gradient(145deg, rgba(11, 11, 18, 0.95), rgba(17, 17, 28, 0.9));
   border: 1px solid rgba(157, 78, 221, 0.18);
   border-radius: 20px;
-  padding: 2.5rem 2rem;
+  padding: 1.75rem 1.5rem;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -1367,7 +1367,7 @@ body:has(#contact:hover) .cursor-glow {
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-top: 2.5rem;
+  margin-top: 1.5rem;
 }
 
 /* --- ESTILO DEL BOTÓN --- */
@@ -1398,7 +1398,7 @@ body:has(#contact:hover) .cursor-glow {
 
 /* --- ESTILOS DE LAS BARRAS --- */
 .skill-container {
-  margin-bottom: 25px;
+  margin-bottom: 16px;
   width: 100%;
 }
 
@@ -1960,8 +1960,16 @@ body:has(#contact:hover) .cursor-glow {
 }
 
 .btn-cv:hover {
-  background-color: var(--lavender-electric);
-  box-shadow: 0 4px 12px rgba(157, 78, 221, 0.3);
+  background: #121826 !important;
+  color: white !important;
+  border-color: transparent !important;
+  box-shadow:
+    0 0 0 1px rgba(157, 78, 221, 0.35),
+    0 0 18px rgba(157, 78, 221, 0.6),
+    0 0 42px rgba(157, 78, 221, 0.28),
+    0 10px 24px rgba(22, 48, 190, 0.18) !important;
+  transform: translateY(-2px) !important;
+  font-weight: bold;
 }
 
 /* --- BLOQUE INFERIOR (División Horizontal) --- */
