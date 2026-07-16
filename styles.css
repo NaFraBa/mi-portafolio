@@ -1304,7 +1304,7 @@ body:has(#contact:hover) .cursor-glow {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: clamp(6rem, 10vw, 10rem) clamp(1rem, 3vw, 2.5rem);
+  padding: clamp(3rem, 5vw, 4.5rem) clamp(1rem, 3vw, 2.5rem) clamp(4rem, 7vw, 9rem);
   background-color: #0b0b12;
   background: linear-gradient(135deg, rgba(11, 11, 18, 0.96), rgba(7, 7, 12, 0.98));
   position: relative;
