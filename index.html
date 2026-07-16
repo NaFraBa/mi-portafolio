@@ -559,19 +559,58 @@
     </section>
 
     <!-- Sección Contacto -->
-    <section id="contact" class="contact-section">
-        <!-- Section Title Header -->
-        <div class="section-title-container">
-            <h2 class="section-title-label">Contact</h2>
-        </div>
-
-        <div class="construction-container">
-            <div class="construction-icon">
-                <i class="fa-solid fa-screwdriver-wrench"></i>
+    <section id="contact" class="seccion-contacto contact-section">
+      <!-- Envoltura para alinear el título perfectamente con el ancho de la card -->
+      <div class="contacto-wrapper">
+        <!-- Título de la sección (AHORA FUERA DE LA CARD) -->
+        <h2 class="contacto-titulo reveal-fade-in" style="transition-delay: 0.1s;">Contact</h2>
+        
+        <!-- Tarjeta de Contacto -->
+        <div class="card-contacto reveal-fade-in" style="transition-delay: 0.2s;">
+          <!-- Sección Superior: Enlaces Principales -->
+          <div class="contacto-superior">
+            <p class="contacto-subtitulo">¿Tienes un proyecto en mente o una propuesta técnica?</p>
+            
+            <div class="enlaces-grid">
+              <!-- Correo -->
+              <a href="mailto:ignacio.frailebayon@gmail.com" class="btn-contacto">
+                <i class="fa-solid fa-envelope"></i> Correo
+              </a>
+              <!-- LinkedIn -->
+              <a href="https://www.linkedin.com/in/ignacio-fraile-bay%C3%B3n-0aa225268" target="_blank" rel="noopener noreferrer" class="btn-contacto">
+                <i class="fa-brands fa-linkedin-in"></i> LinkedIn
+              </a>
+              <!-- GitHub -->
+              <a href="https://github.com/NaFraBa" target="_blank" rel="noopener noreferrer" class="btn-contacto">
+                <i class="fa-brands fa-github"></i> GitHub
+              </a>
+              <!-- Descarga CV -->
+              <a href="./assets/cv_completo.pdf" download="cv_completo.pdf" class="btn-contacto btn-cv">
+                <i class="fa-solid fa-file-arrow-down"></i> Descargar CV
+              </a>
             </div>
-            <h3>Section Under Construction</h3>
-            <p>I am currently refining my contact channels. Please check back soon or reach out via my social profiles.</p>
-        </div>
+          </div>
+
+          <!-- Sección Inferior: Datos de Contexto -->
+          <div class="contacto-inferior">
+            <div class="dato-contexto">
+              <i class="fa-solid fa-location-dot"></i>
+              <div>
+                <span>Ubicación y Disponibilidad</span>
+                <p>Madrid, España (Remoto, híbrido o relocalización)</p>
+              </div>
+            </div>
+            
+            <div class="dato-contexto">
+              <i class="fa-solid fa-earth-americas"></i>
+              <div>
+                <span>Zona Horaria</span>
+                <p>Europa (GMT+1 / CET)</p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- Fin Card -->
+      </div>
     </section>
 
     <!-- Scripts -->

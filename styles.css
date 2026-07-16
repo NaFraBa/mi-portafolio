@@ -1304,7 +1304,7 @@ body:has(#contact:hover) .cursor-glow {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: clamp(4rem, 8vw, 8rem) clamp(1rem, 3vw, 2.5rem);
+  padding: clamp(6rem, 10vw, 10rem) clamp(1rem, 3vw, 2.5rem);
   background-color: #0b0b12;
   background: linear-gradient(135deg, rgba(11, 11, 18, 0.96), rgba(7, 7, 12, 0.98));
   position: relative;
@@ -1367,7 +1367,7 @@ body:has(#contact:hover) .cursor-glow {
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-top: 1rem;
+  margin-top: 2.5rem;
 }
 
 /* --- ESTILO DEL BOTÓN --- */
@@ -1385,7 +1385,7 @@ body:has(#contact:hover) .cursor-glow {
   font-family: 'Space Grotesk', sans-serif;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  margin-bottom: 20px;
+  margin-bottom: 0;
 }
 
 .btn-electrico:hover {
@@ -1852,15 +1852,15 @@ body:has(#contact:hover) .cursor-glow {
 }
 
 /* ==========================================================================
-   SECCIÓN CONTACTO (UNDER CONSTRUCTION)
+   SECCIÓN CONTACTO (INTERACTIVA & RESPONSIVE)
    ========================================================================== */
-.contact-section {
+.seccion-contacto {
   background-color: var(--bg-dark);
   min-height: 100vh;
+  width: 100%;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   padding: clamp(4rem, 8vw, 8rem) clamp(1rem, 3vw, 2.5rem);
   position: relative;
   overflow: hidden;
@@ -1868,82 +1868,159 @@ body:has(#contact:hover) .cursor-glow {
   box-sizing: border-box;
 }
 
-.construction-container {
+/* Envoltura que limita el ancho máximo y alinea los elementos */
+.contacto-wrapper {
+  width: 100%;
+  max-width: 750px; /* Asegura que el título y la card midan lo mismo */
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  background: linear-gradient(145deg, rgba(11, 11, 18, 0.95), rgba(17, 17, 28, 0.9));
-  border: 1px solid rgba(157, 78, 221, 0.18);
-  border-radius: 20px;
-  padding: 3.5rem 2.5rem;
-  max-width: 600px;
-  width: 100%;
-  box-shadow: var(--shadow-elevated);
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  gap: 20px; /* Espacio entre el título fuera de la card y la propia card */
   z-index: 1;
 }
 
-.construction-container:hover {
-  border-color: var(--lavender-electric);
-  box-shadow: 0 0 25px rgba(157, 78, 221, 0.25);
-}
-
-.construction-icon {
-  font-size: 3.8rem;
-  color: var(--lavender-electric);
-  margin-bottom: 1.5rem;
-  animation: construction-bounce 2s ease-in-out infinite alternate;
-  filter: drop-shadow(0 0 10px rgba(157, 78, 221, 0.4));
-}
-
-@keyframes construction-bounce {
-  0% { transform: translateY(0) rotate(0deg); }
-  100% { transform: translateY(-8px) rotate(8deg); }
-}
-
-.construction-container h3 {
+/* Título de la sección (Fuera de la card, justificado a la izquierda) */
+.contacto-titulo {
   font-family: var(--font-display);
-  font-size: 1.6rem;
-  color: var(--white-polar);
-  margin-bottom: 0.8rem;
-}
-
-.construction-container p {
-  font-size: 0.95rem;
-  line-height: 1.6;
-  color: var(--color-text-secondary);
+  color: var(--lavender-electric);
+  font-size: clamp(2rem, 4vw, 2.5rem);
   margin: 0;
+  font-weight: 700;
+  text-align: left;
 }
 
+/* Contenedor de la Tarjeta */
+.card-contacto {
+  background: linear-gradient(145deg, rgba(11, 11, 18, 0.95), rgba(17, 17, 28, 0.9));
+  border: 1px solid rgba(157, 78, 221, 0.18);
+  border-radius: 20px;
+  width: 100%;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+/* Efecto Hover */
+.card-contacto:hover {
+  border-color: var(--lavender-electric);
+  box-shadow: 0 0 0 1px rgba(157, 78, 221, 0.35), 
+              0 0 20px rgba(157, 78, 221, 0.25), 
+              0 16px 40px rgba(22, 48, 190, 0.2);
+  transform: translateY(-3px) !important;
+}
+
+/* --- BLOQUE SUPERIOR --- */
+.contacto-superior {
+  padding: 40px;
+}
+
+.contacto-subtitulo {
+  font-family: var(--font-body);
+  color: #b0b3c1;
+  font-size: 1.05rem;
+  font-weight: 300;
+  margin: 0 0 30px 0;
+  text-align: left;
+}
+
+/* Grid de Botones */
+.enlaces-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+/* Botones Blue Electric */
+.btn-contacto {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: var(--blue-electric);
+  color: var(--white-polar);
+  padding: 12px 16px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-contacto:hover {
+  background-color: #243ec9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(22, 48, 190, 0.3);
+}
+
+/* Botón de CV */
+.btn-cv {
+  background-color: transparent;
+  border: 1px solid var(--lavender-electric);
+  color: var(--white-polar);
+}
+
+.btn-cv:hover {
+  background-color: var(--lavender-electric);
+  box-shadow: 0 4px 12px rgba(157, 78, 221, 0.3);
+}
+
+/* --- BLOQUE INFERIOR (División Horizontal) --- */
+.contacto-inferior {
+  border-top: 1px solid rgba(157, 78, 221, 0.18);
+  padding: 24px 40px;
+  background-color: rgba(11, 11, 18, 0.4);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+}
+
+.dato-contexto {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.dato-contexto i {
+  color: var(--lavender-electric);
+  font-size: 1.2rem;
+}
+
+.dato-contexto span {
+  display: block;
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dato-contexto p {
+  color: var(--white-polar);
+  font-size: 0.95rem;
+  margin: 2px 0 0 0;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
-  .contact-section {
-    min-height: 100vh;
-    padding: 60px 20px;
+  .contacto-superior {
+    padding: 30px 24px;
   }
-  .construction-container {
-    padding: 2.5rem 1.5rem;
+  .contacto-inferior {
+    padding: 20px 24px;
+    flex-direction: column;
+    gap: 20px;
   }
-  .construction-icon {
-    font-size: 3rem;
-  }
-  .construction-container h3 {
-    font-size: 1.4rem;
-  }
-  .construction-container p {
-    font-size: 0.88rem;
+  .contacto-titulo {
+    font-size: 2rem;
   }
 }
-
 @media (max-width: 480px) {
-  .contact-section {
-    min-height: 100vh;
-    padding: 40px 15px;
+  .seccion-contacto {
+    padding: 60px 15px;
   }
-  .construction-container {
-    padding: 2rem 1.25rem;
+  .contacto-superior, .contacto-inferior {
+    padding: 20px 15px;
+  }
+  .enlaces-grid {
+    grid-template-columns: 1fr;
   }
 }
