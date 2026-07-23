@@ -2,7 +2,7 @@ describe('Suite QA - Porfolio Web Tech', () => {
 
     beforeEach(() => {
         // Visita la baseUrl configurada en cypress.config.js
-        cy.visit('/');
+        cy.visit('http://127.0.0.1:5502/index.html');
     });
 
     it('1. Debe cargar la página y mostrar el encabezado principal', () => {
