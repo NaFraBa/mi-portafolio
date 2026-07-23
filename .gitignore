@@ -1,0 +1,11 @@
+# Dependencies
+node_modules/
+
+# Cypress reports & assets
+cypress/reports/
+cypress/videos/
+cypress/screenshots/
+
+# System & IDE files
+.DS_Store
+Thumbs.db
