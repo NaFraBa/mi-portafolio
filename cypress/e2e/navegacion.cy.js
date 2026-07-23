@@ -19,7 +19,7 @@ describe('Suite QA - Navegación y Menú Principal', () => {
     });
 
     it('3. Debe hacer scroll a la sección correspondiente al hacer clic en un enlace', () => {
-        // Busca un enlace del menú que apunte a un ID interno (ej. href="#contacto" o href="#proyectos")
+        // Busca un enlace del menú que apunte a un ID interno (ej. href="#contacto" o href="#contact")
         cy.get('nav a[href^="#"]').first().then(($link) => {
             const targetId = $link.attr('href');
 
@@ -32,18 +32,17 @@ describe('Suite QA - Navegación y Menú Principal', () => {
     });
 
     it('4. Debe validar que la URL contenga el hash al navegar a una sección', () => {
-        // Si la navegación usa anchors (#), comprueba que la URL cambie al hacer clic
         cy.get('nav a[href^="#"]').last().then(($link) => {
             const hash = $link.attr('href'); // Obtiene ej: "#contact"
 
             cy.wrap($link).click();
 
-            // OPCIÓN A (Recomendada): Esperar a que la sección de destino sea visible ANTES de chequear la URL.
-            // Esto asegura que la animación ya ocurrió.
+            // 1. Sincroniza el tiempo esperando a que la sección sea visible
             cy.get(hash).should('be.visible');
 
-            // Ahora sí, chequeamos la URL
+            // 2. Comprueba la URL una vez completada la animación de scroll
             cy.url().should('include', hash);
         });
     });
+
 });
