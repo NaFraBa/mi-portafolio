@@ -11,7 +11,7 @@ module.exports = defineConfig({
     },
     e2e: {
         // La dirección donde corre tu servidor local de VS Code / Antigravity
-        baseUrl: 'http://127.0.0.1:5501/index.html',
+        baseUrl: 'http://127.0.0.1:5502/index.html',
         setupNodeEvents(on, config) {
             require('cypress-mochawesome-reporter/plugin')(on);
         },
