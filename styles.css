@@ -889,7 +889,7 @@ body:has(#contact:hover) .cursor-glow {
 /* Estilo base para todas las tarjetas (Hereda la estética oscura y fina) */
 .bento-card {
   background: linear-gradient(145deg, rgba(11, 11, 18, 0.95), rgba(17, 17, 28, 0.9));
-  cursor: pointer;
+  cursor: default;
   border: 1px solid rgba(157, 78, 221, 0.18);
   border-radius: 20px;
   padding: 2rem;
@@ -911,6 +911,11 @@ body:has(#contact:hover) .cursor-glow {
   border-color: var(--lavender-electric);
   box-shadow: 0 0 0 1px rgba(157, 78, 221, 0.35), 0 0 20px rgba(157, 78, 221, 0.25), 0 16px 40px rgba(22, 48, 190, 0.2);
   transform: translateY(-3px) !important;
+}
+
+.about-bento-section .bento-card,
+.about-bento-section .bento-card * {
+  cursor: default !important;
 }
 
 /* Encabezados internos de las tarjetas */
@@ -1692,7 +1697,7 @@ body:has(#contact:hover) .cursor-glow {
 /* Enlaces de GitHub */
 .repo-links {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 12px;
 }
 
