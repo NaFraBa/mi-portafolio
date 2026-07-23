@@ -46,3 +46,4 @@ describe('Suite QA - Navegación y Menú Principal', () => {
             cy.url().should('include', hash);
         });
     });
+});

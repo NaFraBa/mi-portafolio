@@ -562,6 +562,12 @@
               behavior: 'smooth',
             });
 
+            if (history.pushState) {
+              history.pushState(null, null, targetId);
+            } else {
+              window.location.hash = targetId;
+            }
+
             // Close mobile menu if open
             closeMobileMenu();
           }
