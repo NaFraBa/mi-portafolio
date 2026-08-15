@@ -1690,7 +1690,7 @@ body:has(#contact:hover) .cursor-glow {
   font-size: 0.8rem;
   font-weight: 500;
   transition: all 0.25s ease;
-  cursor: pointer;
+  cursor: default;
 }
 
 
