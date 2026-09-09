@@ -1681,6 +1681,10 @@ body:has(#contact:hover) .cursor-glow {
   margin-bottom: 25px;
 }
 
+#frontend .tech-tags {
+  justify-content: center;
+}
+
 .tech-tags span {
   background-color: rgba(22, 48, 190, 0.15);
   border: 1px solid rgba(22, 48, 190, 0.35);
@@ -1691,6 +1695,7 @@ body:has(#contact:hover) .cursor-glow {
   font-weight: 500;
   transition: all 0.25s ease;
   cursor: default;
+  text-align: center;
 }
 
 
