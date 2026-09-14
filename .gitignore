@@ -1,11 +1,22 @@
 # Dependencies
 node_modules/
 
+# Python & Virtual Environments
+.venv/
+__pycache__/
+
 # Cypress reports & assets
 cypress/reports/
 cypress/videos/
 cypress/screenshots/
 
+# Playwright reports & assets
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
 # System & IDE files
 .DS_Store
 Thumbs.db
+.vscode/
