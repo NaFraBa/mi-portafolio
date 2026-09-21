@@ -1,3 +1,5 @@
 {
-    "liveServer.settings.port": 5502
+    "liveServer.settings.port": 5502,
+    "terminal.integrated.environmentChangesIndicator": "off",
+    "terminal.integrated.environmentChangesRelaunch": false
 }
