@@ -1,5 +1,7 @@
 {
     "liveServer.settings.port": 5502,
-    "terminal.integrated.environmentChangesIndicator": "off",
-    "terminal.integrated.environmentChangesRelaunch": false
+    "python.defaultInterpreterPath": "${workspaceFolder}/.venv/Scripts/python.exe",
+    "python.terminal.activateEnvironment": true,
+    "terminal.integrated.environmentChangesRelaunch": true,
+    "terminal.integrated.environmentChangesIndicator": "off"
 }
