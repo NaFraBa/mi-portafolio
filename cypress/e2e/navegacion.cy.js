@@ -2,7 +2,7 @@ describe('Suite QA - Navegación y Menú Principal', () => {
 
     beforeEach(() => {
         // Carga la URL base configurada en cypress.config.js
-        cy.visit('http://127.0.0.1:5502/index.html');
+        cy.visit('https://nafraba.github.io/mi-portafolio');
     });
 
     it('1. Debe mostrar el menú de navegación principal', () => {
