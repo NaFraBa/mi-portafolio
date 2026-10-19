@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.40.0",
-    "cypress": "^13.0.0",
+    "cypress": "^16.2.0",
     "cypress-mochawesome-reporter": "^4.0.2"
   }
 }
