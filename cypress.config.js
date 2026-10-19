@@ -1,7 +1,6 @@
 const { defineConfig } = require('cypress');
 
 module.exports = defineConfig({
-  allowCypressEnv: false, // Quita el warning de seguridad de Cypress 15.19
   reporter: 'cypress-mochawesome-reporter',
   reporterOptions: {
     reportDir: 'cypress/reports',
@@ -9,6 +8,7 @@ module.exports = defineConfig({
     reportPageTitle: 'Reporte QA - Portfolio Tech',
     embeddedScreenshots: true,
     inlineAssets: true,
+    saveJson: true,
   },
   e2e: {
     baseUrl: 'https://nafraba.github.io/mi-portafolio',
