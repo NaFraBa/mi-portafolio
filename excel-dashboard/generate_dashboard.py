@@ -1,246 +1,419 @@
-import openpyxl
-from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
-from openpyxl.chart import BarChart, Reference, PieChart
+"""Genera el dashboard ejecutivo de QA en Excel a partir de los reportes
+JSON de Playwright y Cypress (mochawesome).
+
+Uso (desde la raíz del proyecto):
+    py excel-dashboard/generate_dashboard.py
+"""
+
+import json
+import re
+import unicodedata
+from pathlib import Path
+
+from openpyxl import Workbook
+from openpyxl.chart import BarChart, PieChart, Reference
+from openpyxl.chart.label import DataLabelList
+from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
 
-def build_advanced_qa_dashboard():
-    wb = openpyxl.Workbook()
-    
-    # -------------------------------------------------------------------------
-    # 1. CREACIÓN DE PESTAÑAS
-    # -------------------------------------------------------------------------
+# Rutas absolutas: el script funciona igual se ejecute desde donde se ejecute
+BASE_DIR = Path(__file__).resolve().parent
+ROOT_DIR = BASE_DIR.parent
+PLAYWRIGHT_JSON = ROOT_DIR / "playwright-report" / "results.json"
+CYPRESS_REPORT_DIR = ROOT_DIR / "cypress" / "reports"
+OUTPUT_FILE = BASE_DIR / "QA_Executive_Dashboard.xlsx"
+
+# Módulos del portfolio: nombre -> categoría
+MODULOS = {
+    "Hero & Servidor": "Disponibilidad HTTP / Hero",
+    "Navegacion & Menu": "Router / Enlaces Ancla",
+    "Habilidades": "DOM Dinamico / Skills",
+    "Proyectos": "Tarjetas & Tabs UI",
+    "Contacto & Redes": "Links Externos & Descarga CV",
+}
+MODULO_OTROS = "Otros / Sin clasificar"
+
+# Reglas de clasificación por palabras clave (se evalúan en este orden).
+# No se usa el código ST-XX porque la numeración difiere entre Playwright
+# y Cypress.
+REGLAS = [
+    ("Contacto & Redes", r"CONTACTO|REDES|CORREO|EXTERNO|\bCV\b"),
+    ("Navegacion & Menu", r"NAVEGA|MENU|SCROLL|\bURL\b|ENLACE"),
+    ("Proyectos", r"PROYECTO"),
+    ("Habilidades", r"SKILL|HABILIDAD"),
+    ("Hero & Servidor", r"HERO|SERVIDOR|HTTP|ENCABEZADO|TITULO|CARGA"),
+]
+
+
+def _normalizar(texto):
+    """Mayúsculas y sin tildes para comparar palabras clave."""
+    texto = unicodedata.normalize("NFKD", str(texto))
+    return "".join(c for c in texto if not unicodedata.combining(c)).upper()
+
+
+def clasificar(*titulos):
+    """Devuelve el módulo según el primer título que encaje con una regla."""
+    for titulo in titulos:
+        t = _normalizar(titulo)
+        for modulo, patron in REGLAS:
+            if re.search(patron, t):
+                return modulo
+    return MODULO_OTROS
+
+
+def _nuevo_modulo(categoria):
+    return {"cat": categoria, "ok": 0, "fail": 0, "skip": 0, "duraciones": []}
+
+
+def _registrar(modulos, modulo, estado, duracion):
+    """estado: 'ok' | 'fail' | 'skip'."""
+    if modulo not in modulos:
+        modulos[modulo] = _nuevo_modulo("Sin categoria")
+    modulos[modulo][estado] += 1
+    if estado != "skip" and duracion:
+        modulos[modulo]["duraciones"].append(duracion)
+
+
+def _leer_playwright(modulos):
+    """Lee el reporter JSON de Playwright (suites anidadas)."""
+    if not PLAYWRIGHT_JSON.exists():
+        print(f"Aviso: no existe {PLAYWRIGHT_JSON.relative_to(ROOT_DIR)}")
+        return 0
+
+    with PLAYWRIGHT_JSON.open(encoding="utf-8") as f:
+        data = json.load(f)
+
+    contador = 0
+
+    def recorrer(suite, padres):
+        nonlocal contador
+        titulos_padre = padres + [suite.get("title", "")]
+        for spec in suite.get("specs", []):
+            modulo = clasificar(spec.get("title", ""), *reversed(titulos_padre))
+            for test in spec.get("tests", []):
+                status = test.get("status")
+                if status == "skipped":
+                    estado = "skip"
+                elif status in ("expected", "flaky"):
+                    estado = "ok"
+                else:
+                    estado = "fail"
+                resultados = test.get("results") or [{}]
+                duracion = resultados[-1].get("duration", 0)
+                _registrar(modulos, modulo, estado, duracion)
+                contador += 1
+        for sub in suite.get("suites", []):
+            recorrer(sub, titulos_padre)
+
+    for suite in data.get("suites", []):
+        recorrer(suite, [])
+    return contador
+
+
+def _leer_cypress(modulos):
+    """Lee los JSON de mochawesome generados por cypress-mochawesome-reporter.
+
+    Usa los JSON individuales de `.jsons/` si existen; si no, el
+    `index.json` combinado (opción saveJson) para no contar dos veces.
+    """
+    jsons_dir = CYPRESS_REPORT_DIR / ".jsons"
+    ficheros = sorted(jsons_dir.glob("*.json")) if jsons_dir.exists() else []
+    if not ficheros and (CYPRESS_REPORT_DIR / "index.json").exists():
+        ficheros = [CYPRESS_REPORT_DIR / "index.json"]
+    if not ficheros:
+        print("Aviso: no se encontraron reportes JSON de Cypress")
+        return 0
+
+    contador = 0
+
+    def recorrer(suite):
+        nonlocal contador
+        for test in suite.get("tests", []):
+            if test.get("pass"):
+                estado = "ok"
+            elif test.get("fail"):
+                estado = "fail"
+            else:
+                estado = "skip"
+            modulo = clasificar(test.get("title", ""), test.get("fullTitle", ""))
+            _registrar(modulos, modulo, estado, test.get("duration", 0))
+            contador += 1
+        for sub in suite.get("suites", []):
+            recorrer(sub)
+
+    for fichero in ficheros:
+        try:
+            with fichero.open(encoding="utf-8") as f:
+                data = json.load(f)
+        except (OSError, json.JSONDecodeError) as e:
+            print(f"Aviso Cypress ({fichero.name}): {e}")
+            continue
+        for resultado in data.get("results", []):
+            recorrer(resultado)
+    return contador
+
+
+def extraer_datos_reales():
+    """Devuelve una fila por módulo:
+    [modulo, categoria, ejecutadas, ok, fallos, bloqueadas, perf_media_ms]
+    """
+    modulos = {nombre: _nuevo_modulo(cat) for nombre, cat in MODULOS.items()}
+
+    try:
+        n_pw = _leer_playwright(modulos)
+    except (OSError, json.JSONDecodeError) as e:
+        print(f"Aviso Playwright: {e}")
+        n_pw = 0
+    n_cy = _leer_cypress(modulos)
+    print(f"Tests leidos -> Playwright: {n_pw} | Cypress: {n_cy}")
+
+    filas = []
+    for nombre, val in modulos.items():
+        total = val["ok"] + val["fail"] + val["skip"]
+        if nombre == MODULO_OTROS and total == 0:
+            continue
+        durs = val["duraciones"]
+        perf = round(sum(durs) / len(durs)) if durs else 0
+        filas.append(
+            [nombre, val["cat"], total, val["ok"], val["fail"], val["skip"], perf]
+        )
+    return filas
+
+
+def build_advanced_qa_dashboard(output=OUTPUT_FILE):
+    wb = Workbook()
+
+    # Pestañas
     ws_dash = wb.active
     ws_dash.title = "Executive Dashboard"
-    ws_dash.views.sheetView[0].showGridLines = True
-    
     ws_modules = wb.create_sheet(title="Resultados por Modulo")
-    ws_modules.views.sheetView[0].showGridLines = True
-
     ws_bugs = wb.create_sheet(title="Defect Log (Bugs)")
-    ws_bugs.views.sheetView[0].showGridLines = True
 
-    # Estilos Generales
+    # Estilos
     font_family = "Segoe UI"
-    header_fill = PatternFill(start_color="0F172A", end_color="0F172A", fill_type="solid") # Dark Slate
+    header_fill = PatternFill(
+        start_color="0F172A", end_color="0F172A", fill_type="solid"
+    )
     header_font = Font(name=font_family, size=10, bold=True, color="FFFFFF")
     data_font = Font(name=font_family, size=10)
+    bold_font = Font(name=font_family, size=10, bold=True)
     center_align = Alignment(horizontal="center", vertical="center")
     right_align = Alignment(horizontal="right", vertical="center")
+    thin_side = Side(style="thin", color="E2E8F0")
     thin_border = Border(
-        left=Side(style='thin', color='E2E8F0'),
-        right=Side(style='thin', color='E2E8F0'),
-        top=Side(style='thin', color='E2E8F0'),
-        bottom=Side(style='thin', color='E2E8F0')
+        left=thin_side, right=thin_side, top=thin_side, bottom=thin_side
     )
+    fmt_ms = '#,##0" ms"'
 
-    # -------------------------------------------------------------------------
-    # 2. DATA EN HOJA: RESULTADOS POR MÓDULO
-    # -------------------------------------------------------------------------
+    def pintar_cabecera(ws, n_cols):
+        for col in range(1, n_cols + 1):
+            c = ws.cell(row=1, column=col)
+            c.fill = header_fill
+            c.font = header_font
+            c.alignment = center_align
+            c.border = thin_border
+
+    def autoajustar_columnas(ws, minimo=12):
+        for col in ws.columns:
+            max_len = max(len(str(cell.value or "")) for cell in col)
+            letra = get_column_letter(col[0].column)
+            ws.column_dimensions[letra].width = max(max_len + 4, minimo)
+
+    # ------------------------------------------------------------------
+    # 1. Hoja: Resultados por Módulo
+    # ------------------------------------------------------------------
     mod_headers = [
-        "Módulo / Área Web", "Categoría Pruebas", "Ejecutadas", 
-        "OK (Passed)", "Fallos (Failed)", "Bloqueadas", "Pass Rate (%)", "Perf Prom (ms)"
+        "Modulo / Area Web",
+        "Categoria Pruebas",
+        "Ejecutadas",
+        "OK (Passed)",
+        "Fallos (Failed)",
+        "Bloqueadas",
+        "Pass Rate (%)",
+        "Perf Prom (ms)",
     ]
-    
-    mod_data = [
-        ["Navegación & Header", "Links & Router", 150, 145, 3, 2, 280],
-        ["Formulario de Registro", "Form / Inputs", 95, 88, 5, 2, 410],
-        ["Checkout & Pasarela", "Form / Payments", 120, 105, 12, 3, 850],
-        ["Botones CTA & Modales", "UI / Interacción", 80, 78, 2, 0, 190],
-        ["Búsqueda y Filtros", "Performance & API", 110, 98, 10, 2, 630],
-        ["Footer & Enlaces Ext", "Links Externos", 45, 45, 0, 0, 220],
-        ["Autenticación & Login", "Seguridad / Form", 90, 85, 4, 1, 380],
-        ["Carrito de Compras", "E-Commerce / State", 105, 92, 11, 2, 540],
-    ]
-
     ws_modules.append(mod_headers)
-    for col in range(1, len(mod_headers) + 1):
-        cell = ws_modules.cell(row=1, column=col)
-        cell.fill = header_fill; cell.font = header_font; cell.alignment = center_align
+    pintar_cabecera(ws_modules, len(mod_headers))
 
-    for i, row in enumerate(mod_data, start=2):
-        mod, cat, total, ok, fail, block, perf = row
-        pass_rate_formula = f'=D{i}/C{i}'
-        
-        ws_modules.append([mod, cat, total, ok, fail, block, pass_rate_formula, perf])
+    datos = extraer_datos_reales()
 
-        # Formatos
-        ws_modules.cell(row=i, column=1).font = data_font
-        ws_modules.cell(row=i, column=2).font = data_font
-        ws_modules.cell(row=i, column=3).alignment = right_align
-        ws_modules.cell(row=i, column=4).alignment = right_align
-        ws_modules.cell(row=i, column=5).alignment = right_align
-        ws_modules.cell(row=i, column=6).alignment = right_align
-        
-        c_rate = ws_modules.cell(row=i, column=7)
-        c_rate.number_format = '0.0%'
-        c_rate.alignment = center_align
-        
-        c_perf = ws_modules.cell(row=i, column=8)
-        c_perf.number_format = '#,##0" ms"'
-        c_perf.alignment = right_align
+    for i, (mod, cat, total, ok, fail, block, perf) in enumerate(datos, start=2):
+        ws_modules.append(
+            [mod, cat, total, ok, fail, block, f"=IF(C{i}=0,0,D{i}/C{i})", perf]
+        )
+        for col in range(1, 9):
+            c = ws_modules.cell(row=i, column=col)
+            c.font = data_font
+            c.border = thin_border
+            if 3 <= col <= 6 or col == 8:
+                c.alignment = right_align
+        ws_modules.cell(row=i, column=7).number_format = "0.0%"
+        ws_modules.cell(row=i, column=7).alignment = center_align
+        ws_modules.cell(row=i, column=8).number_format = fmt_ms
 
-        for c in range(1, 9): ws_modules.cell(row=i, column=c).border = thin_border
+    ult = len(datos) + 1  # última fila de datos
+    tot_r = ult + 1  # fila de totales
+    ws_modules[f"A{tot_r}"] = "Total / Promedio"
+    for letra in "CDEF":
+        ws_modules[f"{letra}{tot_r}"] = f"=SUM({letra}2:{letra}{ult})"
+    ws_modules[f"G{tot_r}"] = f"=IF(C{tot_r}=0,0,D{tot_r}/C{tot_r})"
+    ws_modules[f"G{tot_r}"].number_format = "0.0%"
+    ws_modules[f"H{tot_r}"] = f'=IFERROR(AVERAGEIF(H2:H{ult},">0"),0)'
+    ws_modules[f"H{tot_r}"].number_format = fmt_ms
+    for col in range(1, 9):
+        c = ws_modules.cell(row=tot_r, column=col)
+        c.font = bold_font
+        c.border = thin_border
+        c.alignment = center_align if col == 7 else right_align
+    ws_modules[f"A{tot_r}"].alignment = Alignment(vertical="center")
 
-    # Totales Módulos
-    ws_modules["A10"] = "Total / Promedio"
-    ws_modules["C10"] = "=SUM(C2:C9)"
-    ws_modules["D10"] = "=SUM(D2:D9)"
-    ws_modules["E10"] = "=SUM(E2:E9)"
-    ws_modules["F10"] = "=SUM(F2:F9)"
-    ws_modules["G10"] = "=D10/C10"
-    ws_modules["H10"] = "=AVERAGE(H2:H9)"
+    autoajustar_columnas(ws_modules, minimo=15)
+    ws_modules.freeze_panes = "A2"
 
-    for col in ws_modules.columns:
-        max_len = max(len(str(cell.value or '')) for cell in col)
-        ws_modules.column_dimensions[get_column_letter(col[0].column)].width = max(max_len + 4, 15)
-
-    # -------------------------------------------------------------------------
-    # 3. DATA EN HOJA: DEFECT LOG (BUGS)
-    # -------------------------------------------------------------------------
-    bug_headers = ["Bug ID", "Módulo Afectado", "Severidad", "Descripción Breve", "Estado", "Responsable"]
-    bug_data = [
-        ["BUG-001", "Checkout & Pasarela", "Crítica", "Error 500 al procesar pago con Visa", "Abierto", "Dev Team Lead"],
-        ["BUG-002", "Checkout & Pasarela", "Alta", "El botón 'Pagar' permite doble clic", "En Progreso", "Frontend QA"],
-        ["BUG-003", "Búsqueda y Filtros", "Alta", "Filtro de precio no responde en mobile", "Abierto", "Frontend Lead"],
-        ["BUG-004", "Carrito de Compras", "Crítica", "Persistencia de estado se pierde en F5", "Abierto", "Backend QA"],
-        ["BUG-005", "Formulario de Registro", "Media", "Validación de email acepta formatos inválidos", "Resuelto", "QA Automation"],
-        ["BUG-006", "Autenticación & Login", "Media", "Mensaje de error no accesible para Lector de Pantalla", "Abierto", "UI/UX Dev"],
-        ["BUG-007", "Navegación & Header", "Baja", "Desalineación de 2px en el menú desplegable", "Cerrado", "Frontend Dev"],
+    # ------------------------------------------------------------------
+    # 2. Hoja: Defect Log
+    # ------------------------------------------------------------------
+    bug_headers = [
+        "Bug ID",
+        "Modulo Afectado",
+        "Severidad",
+        "Descripcion Breve",
+        "Estado",
+        "Responsable",
     ]
-
+    bug_data = [
+        [
+            "BUG-001",
+            "Proyectos",
+            "Media",
+            "Pestana secundaria requiere seleccion activa",
+            "Resuelto",
+            "QA Automation",
+        ],
+        [
+            "BUG-002",
+            "Habilidades",
+            "Baja",
+            "Animacion CSS requiere scroll",
+            "Resuelto",
+            "Frontend QA",
+        ],
+    ]
     ws_bugs.append(bug_headers)
-    for col in range(1, len(bug_headers) + 1):
-        cell = ws_bugs.cell(row=1, column=col)
-        cell.fill = header_fill; cell.font = header_font; cell.alignment = center_align
+    pintar_cabecera(ws_bugs, len(bug_headers))
 
     for i, row in enumerate(bug_data, start=2):
         ws_bugs.append(row)
-        for c in range(1, 7):
-            cell = ws_bugs.cell(row=i, column=c)
-            cell.font = data_font
-            cell.border = thin_border
-            if c in [1, 3, 5]: cell.alignment = center_align
+        for col in range(1, len(bug_headers) + 1):
+            c = ws_bugs.cell(row=i, column=col)
+            c.font = data_font
+            c.border = thin_border
+            if col in (1, 3, 5):
+                c.alignment = center_align
 
-    # Tabla de Resumen de Bugs por Severidad para Gráfico
-    ws_bugs["H1"] = "Severidad"
-    ws_bugs["I1"] = "Cantidad"
-    ws_bugs["H1"].fill = header_fill; ws_bugs["H1"].font = header_font
-    ws_bugs["I1"].fill = header_fill; ws_bugs["I1"].font = header_font
+    autoajustar_columnas(ws_bugs)
+    ws_bugs.freeze_panes = "A2"
 
-    severities = [("Crítica", '=COUNTIF(C2:C8, "Crítica")'),
-                  ("Alta", '=COUNTIF(C2:C8, "Alta")'),
-                  ("Media", '=COUNTIF(C2:C8, "Media")'),
-                  ("Baja", '=COUNTIF(C2:C8, "Baja")')]
+    # ------------------------------------------------------------------
+    # 3. Hoja: Executive Dashboard
+    # ------------------------------------------------------------------
+    # Columnas B:K más anchas para que tarjetas y gráficos no se solapen
+    ws_dash.column_dimensions["A"].width = 3
+    for col in range(2, 12):
+        ws_dash.column_dimensions[get_column_letter(col)].width = 14
 
-    for idx, (sev, form) in enumerate(severities, start=2):
-        ws_bugs[f"H{idx}"] = sev
-        ws_bugs[f"I{idx}"] = form
-        ws_bugs[f"H{idx}"].border = thin_border
-        ws_bugs[f"I{idx}"].border = thin_border
-
-    for col in ws_bugs.columns:
-        max_len = max(len(str(cell.value or '')) for cell in col)
-        ws_bugs.column_dimensions[get_column_letter(col[0].column)].width = max(max_len + 4, 15)
-
-    # -------------------------------------------------------------------------
-    # 4. CONSTRUCCIÓN DEL DASHBOARD EJECUTIVO (KPIs & GRÁFICOS)
-    # -------------------------------------------------------------------------
-    
-    # Titular principal
     ws_dash.merge_cells("B2:K3")
-    title_cell = ws_dash["B2"]
-    title_cell.value = "WEB TESTING & QUALITY ASSURANCE - DASHBOARD EJECUTIVO"
-    title_cell.font = Font(name=font_family, size=15, bold=True, color="FFFFFF")
-    title_cell.fill = PatternFill(start_color="1E3A8A", end_color="1E3A8A", fill_type="solid") # Dark Blue
-    title_cell.alignment = center_align
-
-    # Tarjetas KPI
-    kpi_bg = PatternFill(start_color="F8FAFC", end_color="F8FAFC", fill_type="solid")
-    kpi_border = Border(
-        left=Side(style='thin', color='CBD5E1'), right=Side(style='thin', color='CBD5E1'),
-        top=Side(style='thin', color='CBD5E1'), bottom=Side(style='thin', color='CBD5E1')
+    t = ws_dash["B2"]
+    t.value = "PORTFOLIO QA AUTOMATION - EXECUTIVE DASHBOARD"
+    t.font = Font(name=font_family, size=14, bold=True, color="FFFFFF")
+    t.fill = PatternFill(
+        start_color="1E3A8A", end_color="1E3A8A", fill_type="solid"
     )
+    t.alignment = center_align
 
+    hoja = "'Resultados por Modulo'"
     kpis = [
-        ("B5:C5", "B6:C6", "TOTAL PRUEBAS", "='Resultados por Modulo'!C10", "1E3A8A", '#,##0'),
-        ("D5:E5", "D6:E6", "PRUEBAS OK", "='Resultados por Modulo'!D10", "16A34A", '#,##0'),
-        ("F5:G5", "F6:G6", "FALLOS (FAILED)", "='Resultados por Modulo'!E10", "DC2626", '#,##0'),
-        ("H5:I5", "H6:I6", "PASS RATE (%)", "='Resultados por Modulo'!G10", "2563EB", '0.0%'),
-        ("J5:K5", "J6:K6", "TOTAL BUGS", "=COUNTA('Defect Log (Bugs)'!A2:A8)", "D97706", '#,##0')
+        ("B", "C", "TOTAL PRUEBAS", f"={hoja}!C{tot_r}", "1E3A8A", "#,##0"),
+        ("D", "E", "PRUEBAS OK", f"={hoja}!D{tot_r}", "16A34A", "#,##0"),
+        ("F", "G", "FALLOS (FAILED)", f"={hoja}!E{tot_r}", "DC2626", "#,##0"),
+        ("H", "I", "PASS RATE (%)", f"={hoja}!G{tot_r}", "2563EB", "0.0%"),
+        ("J", "K", "PERF PROMEDIO", f"={hoja}!H{tot_r}", "D97706", fmt_ms),
     ]
 
-    for m1, m2, label, formula, color_hex, num_fmt in kpis:
-        ws_dash.merge_cells(m1); ws_dash.merge_cells(m2)
-        top_cell = ws_dash[m1.split(":")[0]]
-        val_cell = ws_dash[m2.split(":")[0]]
+    kpi_bg = PatternFill(
+        start_color="F8FAFC", end_color="F8FAFC", fill_type="solid"
+    )
+    kpi_side = Side(style="thin", color="CBD5E1")
+    kpi_border = Border(
+        left=kpi_side, right=kpi_side, top=kpi_side, bottom=kpi_side
+    )
+    ws_dash.row_dimensions[6].height = 30
 
-        top_cell.value = label
-        top_cell.font = Font(name=font_family, size=8, bold=True, color="64748B")
-        top_cell.alignment = center_align; top_cell.fill = kpi_bg
+    for c1, c2, label, formula, color_hex, num_fmt in kpis:
+        r_top, r_val = f"{c1}5:{c2}5", f"{c1}6:{c2}6"
+        ws_dash.merge_cells(r_top)
+        ws_dash.merge_cells(r_val)
 
-        val_cell.value = formula
-        val_cell.font = Font(name=font_family, size=16, bold=True, color=color_hex)
-        val_cell.alignment = center_align; val_cell.fill = kpi_bg
-        val_cell.number_format = num_fmt
+        top_c = ws_dash[f"{c1}5"]
+        top_c.value = label
+        top_c.font = Font(name=font_family, size=9, bold=True, color="64748B")
 
-    # Aplicar bordes a las tarjetas de KPI
-    for col_letter in ["B", "C", "D", "E", "F", "G", "H", "I", "J", "K"]:
-        ws_dash[f"{col_letter}5"].border = kpi_border
-        ws_dash[f"{col_letter}6"].border = kpi_border
+        val_c = ws_dash[f"{c1}6"]
+        val_c.value = formula
+        val_c.font = Font(name=font_family, size=16, bold=True, color=color_hex)
+        val_c.number_format = num_fmt
 
-    # -------------------------------------------------------------------------
-    # 5. UBICACIÓN Y CONFIGURACIÓN DE GRÁFICOS (SIN SOLAPAMIENTO)
-    # -------------------------------------------------------------------------
+        for rango in (r_top, r_val):
+            for row in ws_dash[rango]:
+                for c in row:
+                    c.fill = kpi_bg
+                    c.border = kpi_border
+                    c.alignment = center_align
 
-    # GRÁFICO 1: Pruebas OK vs Fallos vs Bloqueadas por Módulo (Columna B8)
-    chart1 = BarChart()
-    chart1.type = "col"
-    chart1.style = 10
-    chart1.title = "Resultados de Ejecución por Módulo Web"
-    chart1.y_axis.title = "Cantidad de Casos"
-    
-    data1 = Reference(ws_modules, min_col=4, min_row=1, max_col=6, max_row=9)
-    cats1 = Reference(ws_modules, min_col=1, min_row=2, max_row=9)
-    chart1.add_data(data1, titles_from_data=True)
-    chart1.set_categories(cats1)
-    chart1.width = 20
-    chart1.height = 11
+    # ------------------------------------------------------------------
+    # 4. Gráficos
+    # ------------------------------------------------------------------
+    bar = BarChart()
+    bar.type = "col"
+    bar.title = "Resultados Smoke Tests por Modulo"
+    bar.y_axis.title = "Tests"
+    bar.width = 15
+    bar.height = 9
+    bar.add_data(
+        Reference(ws_modules, min_col=4, min_row=1, max_col=5, max_row=ult),
+        titles_from_data=True,
+    )
+    bar.set_categories(Reference(ws_modules, min_col=1, min_row=2, max_row=ult))
+    # openpyxl >= 3.1 oculta los ejes por defecto
+    bar.x_axis.delete = False
+    bar.y_axis.delete = False
+    ws_dash.add_chart(bar, "B9")
 
-    ws_dash.add_chart(chart1, "B8")
+    pie = PieChart()
+    pie.title = "Pass Rate Global"
+    pie.width = 10
+    pie.height = 9
+    pie.add_data(
+        Reference(ws_modules, min_col=4, min_row=tot_r, max_col=5, max_row=tot_r),
+        from_rows=True,
+        titles_from_data=False,
+    )
+    pie.set_categories(
+        Reference(ws_modules, min_col=4, min_row=1, max_col=5, max_row=1)
+    )
+    pie.dataLabels = DataLabelList()
+    pie.dataLabels.showPercent = True
+    ws_dash.add_chart(pie, "H9")
 
-    # GRÁFICO 2: Distribución de Bugs por Severidad (Columna I8 - Al lado del Gráfico 1)
-    chart2 = PieChart()
-    chart2.title = "Bugs por Severidad"
-    
-    data2 = Reference(ws_bugs, min_col=9, min_row=1, max_row=5)
-    cats2 = Reference(ws_bugs, min_col=8, min_row=2, max_row=5)
-    chart2.add_data(data2, titles_from_data=True)
-    chart2.set_categories(cats2)
-    chart2.width = 11
-    chart2.height = 11
+    # ------------------------------------------------------------------
+    # Guardado
+    # ------------------------------------------------------------------
+    output = Path(output)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    wb.save(output)
+    print(f"Excel generado exitosamente en: {output}")
+    return output
 
-    ws_dash.add_chart(chart2, "I8")
-
-    # GRÁFICO 3: Performance (Tiempo de Carga en ms por Módulo) (Ubicado Abajo en B24)
-    chart3 = BarChart()
-    chart3.type = "bar" # Barras horizontales
-    chart3.style = 13
-    chart3.title = "Performance: Tiempo Promedio de Respuesta (ms)"
-    chart3.x_axis.title = "Milisegundos (ms)"
-    
-    data3 = Reference(ws_modules, min_col=8, min_row=1, max_row=9)
-    cats3 = Reference(ws_modules, min_col=1, min_row=2, max_row=9)
-    chart3.add_data(data3, titles_from_data=True)
-    chart3.set_categories(cats3)
-    chart3.width = 20
-    chart3.height = 11
-
-    ws_dash.add_chart(chart3, "B24")
-
-    # Guardar
-    output_filename = "Dashboard_QA_Avanzado.xlsx"
-    wb.save(output_filename)
-    print(f"¡Reporte Avanzado de QA generado con éxito!: {output_filename}")
 
 if __name__ == "__main__":
     build_advanced_qa_dashboard()

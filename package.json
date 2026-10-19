@@ -1,7 +1,24 @@
 {
+  "name": "portfolio-qa-automation",
+  "version": "1.0.0",
+  "description": "Automatizacion de pruebas con Cypress y Playwright para mi-portafolio",
+  "scripts": {
+    "test:all": "npm run test:playwright && npm run test:cypress",
+    "smoke:all": "npm run test:playwright:smoke && npm run test:cypress:smoke",
+    "test:cypress": "cypress run",
+    "test:cypress:smoke": "cypress run --spec 'cypress/e2e/smoke.cy.js'",
+    "cypress:open": "cypress open",
+    "test:playwright": "playwright test",
+    "test:playwright:smoke": "playwright test tests/smoke.spec.js",
+    "test:playwright:e2e": "playwright test tests/E2E.spec.js",
+    "test:playwright:carga": "playwright test tests/carga.spec.js",
+    "test:playwright:ui": "playwright test --ui",
+    "report:playwright": "playwright show-report",
+    "report:excel": "python excel-dashboard/generate_dashboard.py"
+  },
   "devDependencies": {
-    "@playwright/test": "^1.63.0",
-    "cypress": "^15.19.0",
+    "@playwright/test": "^1.40.0",
+    "cypress": "^13.0.0",
     "cypress-mochawesome-reporter": "^4.0.2"
   }
 }
