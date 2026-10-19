@@ -3,10 +3,13 @@ JSON de Playwright y Cypress (mochawesome).
 
 Uso (desde la raíz del proyecto):
     py excel-dashboard/generate_dashboard.py
+    py excel-dashboard/generate_dashboard.py Mi_Reporte
+    py excel-dashboard/generate_dashboard.py Mi_Reporte.xlsx
 """
 
 import json
 import re
+import sys
 import unicodedata
 from pathlib import Path
 
@@ -21,7 +24,6 @@ BASE_DIR = Path(__file__).resolve().parent
 ROOT_DIR = BASE_DIR.parent
 PLAYWRIGHT_JSON = ROOT_DIR / "playwright-report" / "results.json"
 CYPRESS_REPORT_DIR = ROOT_DIR / "cypress" / "reports"
-OUTPUT_FILE = BASE_DIR / "QA_Executive_Dashboard.xlsx"
 
 # Módulos del portfolio: nombre -> categoría
 MODULOS = {
@@ -34,8 +36,6 @@ MODULOS = {
 MODULO_OTROS = "Otros / Sin clasificar"
 
 # Reglas de clasificación por palabras clave (se evalúan en este orden).
-# No se usa el código ST-XX porque la numeración difiere entre Playwright
-# y Cypress.
 REGLAS = [
     ("Contacto & Redes", r"CONTACTO|REDES|CORREO|EXTERNO|\bCV\b"),
     ("Navegacion & Menu", r"NAVEGA|MENU|SCROLL|\bURL\b|ENLACE"),
@@ -111,11 +111,7 @@ def _leer_playwright(modulos):
 
 
 def _leer_cypress(modulos):
-    """Lee los JSON de mochawesome generados por cypress-mochawesome-reporter.
-
-    Usa los JSON individuales de `.jsons/` si existen; si no, el
-    `index.json` combinado (opción saveJson) para no contar dos veces.
-    """
+    """Lee los JSON de mochawesome generados por cypress-mochawesome-reporter."""
     jsons_dir = CYPRESS_REPORT_DIR / ".jsons"
     ficheros = sorted(jsons_dir.glob("*.json")) if jsons_dir.exists() else []
     if not ficheros and (CYPRESS_REPORT_DIR / "index.json").exists():
@@ -180,7 +176,7 @@ def extraer_datos_reales():
     return filas
 
 
-def build_advanced_qa_dashboard(output=OUTPUT_FILE):
+def build_advanced_qa_dashboard(output="excel-dashboard/QA_Executive_Dashboard.xlsx"):
     wb = Workbook()
 
     # Pestañas
@@ -251,8 +247,8 @@ def build_advanced_qa_dashboard(output=OUTPUT_FILE):
         ws_modules.cell(row=i, column=7).alignment = center_align
         ws_modules.cell(row=i, column=8).number_format = fmt_ms
 
-    ult = len(datos) + 1  # última fila de datos
-    tot_r = ult + 1  # fila de totales
+    ult = len(datos) + 1
+    tot_r = ult + 1
     ws_modules[f"A{tot_r}"] = "Total / Promedio"
     for letra in "CDEF":
         ws_modules[f"{letra}{tot_r}"] = f"=SUM({letra}2:{letra}{ult})"
@@ -317,7 +313,6 @@ def build_advanced_qa_dashboard(output=OUTPUT_FILE):
     # ------------------------------------------------------------------
     # 3. Hoja: Executive Dashboard
     # ------------------------------------------------------------------
-    # Columnas B:K más anchas para que tarjetas y gráficos no se solapen
     ws_dash.column_dimensions["A"].width = 3
     for col in range(2, 12):
         ws_dash.column_dimensions[get_column_letter(col)].width = 14
@@ -384,7 +379,6 @@ def build_advanced_qa_dashboard(output=OUTPUT_FILE):
         titles_from_data=True,
     )
     bar.set_categories(Reference(ws_modules, min_col=1, min_row=2, max_row=ult))
-    # openpyxl >= 3.1 oculta los ejes por defecto
     bar.x_axis.delete = False
     bar.y_axis.delete = False
     ws_dash.add_chart(bar, "B9")
@@ -409,6 +403,15 @@ def build_advanced_qa_dashboard(output=OUTPUT_FILE):
     # Guardado
     # ------------------------------------------------------------------
     output = Path(output)
+
+    # Si no tiene extensión .xlsx, se la agrega automáticamente
+    if output.suffix.lower() != ".xlsx":
+        output = output.with_suffix(".xlsx")
+
+    # Si solo pasas el nombre (sin carpeta), lo coloca en excel-dashboard/
+    if len(output.parts) == 1:
+        output = Path("excel-dashboard") / output
+
     output.parent.mkdir(parents=True, exist_ok=True)
     wb.save(output)
     print(f"Excel generado exitosamente en: {output}")
@@ -416,4 +419,6 @@ def build_advanced_qa_dashboard(output=OUTPUT_FILE):
 
 
 if __name__ == "__main__":
-    build_advanced_qa_dashboard()
+    # Lee el argumento de la terminal si existe; de lo contrario usa el valor por defecto
+    custom_output = sys.argv[1] if len(sys.argv) > 1 else "QA_Executive_Dashboard.xlsx"
+    build_advanced_qa_dashboard(custom_output)
