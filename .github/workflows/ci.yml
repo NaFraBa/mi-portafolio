@@ -1,0 +1,98 @@
+name: Pipeline CI - QA Completo (Playwright + Cypress + Excel Dashboard)
+
+# 1. ¿Cuándo se ejecuta el pipeline?
+# Al hacer push o pull_request a main/master, o manualmente desde el botón "Run workflow" en GitHub
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  qa-integrado:
+    name: 🚀 Ejecución Total QA (Playwright + Cypress + Excel)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      # =====================================================================
+      # FASE 1: PREPARACIÓN DEL ENTORNO (Código, Node.js y Python)
+      # =====================================================================
+      - name: 1. Descargar código del repositorio
+        uses: actions/checkout@v4
+
+      - name: 2. Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: 3. Configurar Python (para el Dashboard Excel)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: 4. Instalar dependencias de Node.js (Playwright, Cypress, Mochawesome)
+        run: npm ci
+
+      - name: 5. Instalar librerías de Python (requirements.txt)
+        run: pip install -r requirements.txt
+
+      - name: 6. Instalar navegadores de Playwright
+        run: npx playwright install --with-deps
+
+      # =====================================================================
+      # FASE 2: POOL DE PRUEBAS PLAYWRIGHT (tests/)
+      # =====================================================================
+      - name: 7. [Playwright] Ejecutar Smoke (smoke.spec.js)
+        run: npm run test:playwright:smoke
+
+      - name: 8. [Playwright] Ejecutar Carga (carga.spec.js)
+        run: npm run test:playwright:carga
+
+      - name: 9. [Playwright] Ejecutar E2E (E2E.spec.js)
+        run: npm run test:playwright:e2e
+
+      - name: 10. [Playwright] Consolidar reporte completo (results.json e index.html)
+        if: always()
+        run: npm run test:playwright
+
+      # =====================================================================
+      # FASE 3: POOL DE PRUEBAS CYPRESS (cypress/e2e/)
+      # =====================================================================
+      - name: 11. [Cypress] Ejecutar Smoke (smoke.cy.js)
+        if: always()
+        run: npm run test:cypress:smoke
+
+      - name: 12. [Cypress] Ejecutar Carga (carga.cy.js)
+        if: always()
+        run: npm run test:cypress:carga
+
+      - name: 13. [Cypress] Ejecutar Navegación (navegacion.cy.js)
+        if: always()
+        run: npm run test:cypress:navegacion
+
+      # =====================================================================
+      # FASE 4: GENERACIÓN DE DASHBOARDS EN EXCEL CON PYTHON
+      # =====================================================================
+      - name: 14. [Python] Generar Dashboards Ejecutivos en Excel
+        if: always()
+        run: npm run report:excel
+
+      # =====================================================================
+      # FASE 5: GUARDAR TODOS LOS REPORTES Y EVIDENCIAS EN GITHUB
+      # =====================================================================
+      - name: 15. Subir paquete completo de evidencias QA (HTML, Capturas y Excels)
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Pack-Completo-Reportes-QA
+          path: |
+            playwright-report/
+            test-results/
+            cypress/reports/
+            cypress/screenshots/
+            excel-dashboard/*.xlsx
+          retention-days: 14
