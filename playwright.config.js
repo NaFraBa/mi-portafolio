@@ -23,7 +23,8 @@ export default defineConfig({
     baseURL: 'https://nafraba.github.io/mi-portafolio/',
 
     // Abre el navegador visible tal como lo tenías configurado
-    headless: !!process.env.CI,
+    //headless: !!process.env.CI,
+    headless:true,
 
     // Captura trazas y screenshots si un test falla
     trace: 'on-first-retry',

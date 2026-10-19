@@ -1,164 +1,195 @@
-# Portafolio Web & Suite de Testing Automatizado (Playwright & Cypress)
+# Portafolio Web & Suite de Calidad QA Automatizada (CI/CD)
 
-Repositorio que contiene el código fuente, la arquitectura de componentes y la suite completa de pruebas automatizadas End-to-End (E2E) para el portafolio web personal:
-👉 **URL del proyecto:** [https://nafraba.github.io/mi-portafolio/](https://nafraba.github.io/mi-portafolio/)
+[![Pipeline CI - QA Completo](https://github.com/NaFraBa/mi-portafolio/actions/workflows/ci.yml/badge.svg)](https://github.com/NaFraBa/mi-portafolio/actions/workflows/ci.yml)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-2563EB?style=flat&logo=github)](https://nafraba.github.io/mi-portafolio/)
+[![Playwright](https://img.shields.io/badge/Playwright-E2E%20&%20Smoke-45BA4B?style=flat&logo=playwright&logoColor=white)](https://playwright.dev/)
+[![Cypress](https://img.shields.io/badge/Cypress-Component%20&%20E2E-17202C?style=flat&logo=cypress)](https://cypress.io/)
+[![Python](https://img.shields.io/badge/Python-Excel%20Reporting-3776AB?style=flat&logo=python&logoColor=white)](https://python.org/)
+
+Repositorio que alberga el código fuente del portafolio personal y su **infraestructura profesional de Aseguramiento de Calidad (QA)** con integración continua (CI/CD) automatizada mediante GitHub Actions.
+
+👉 **Despliegue en producción:** [https://nafraba.github.io/mi-portafolio/](https://nafraba.github.io/mi-portafolio/)
 
 ---
 
-## 📁 Estructura General del Proyecto
+## 🚀 Pipeline de Integración Continua (CI/CD con GitHub Actions)
+
+Cada vez que se realiza un `push` o `pull_request` a la rama principal (`main`), se dispara automáticamente el flujo [`.github/workflows/ci.yml`](file:///.github/workflows/ci.yml) en un contenedor limpio de Ubuntu (`ubuntu-latest`).
+
+```text
+[ Push a main ]
+       │
+       ▼
+┌─────────────────────────────────────────────────────────────────┐
+│ 1. Preparación: Checkout, Node.js 22, Python 3.12 y Navegadores │
+└────────────────┬────────────────────────────────────────────────┘
+                 │
+                 ▼
+┌─────────────────────────────────────────────────────────────────┐
+│ 2. Playwright: Smoke Tests, Pruebas de Carga y Flujos E2E       │
+└────────────────┬────────────────────────────────────────────────┘
+                 │
+                 ▼
+┌─────────────────────────────────────────────────────────────────┐
+│ 3. Cypress: Navegación, Componentes e Interacción UI            │
+└────────────────┬────────────────────────────────────────────────┘
+                 │
+                 ▼
+┌─────────────────────────────────────────────────────────────────┐
+│ 4. Python: Consolidación y Generación de Dashboard Excel        │
+└────────────────┬────────────────────────────────────────────────┘
+                 │
+                 ▼
+┌─────────────────────────────────────────────────────────────────┐
+│ 5. Publicación de Artefactos: Pack-Completo-Reportes-QA (14 d)  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Evidencias y Artefactos Generados en la Nube
+Al finalizar el pipeline, GitHub Actions empaqueta automáticamente y deja disponible para descarga:
+* **Reporte interactivo HTML de Playwright:** Trazas, tiempos y capturas paso a paso.
+* **Reporte Mochawesome de Cypress:** Métricas de aserciones y navegación.
+* **Dashboard Ejecutivo en Excel (`QA_Executive_Dashboard.xlsx`):** KPIs consolidados (Pass Rate %, Total Pruebas, Fallos y Gráficos dinámicos).
+
+---
+
+## 📁 Estructura del Proyecto
 
 ```text
 Portfolio/
-├── assets/                  # Recursos estáticos (imágenes, iconos, tipografías)
-├── cypress/                 # Framework de testing E2E con Cypress
-│   ├── e2e/                 # Suites de pruebas (navegacion.cy.js, etc.)
-│   ├── reports/             # Reportes de ejecución generados
-│   ├── screenshots/         # Capturas de pantalla de validación / fallos
-│   └── support/             # Comandos personalizados y utilidades (e2e.js, commands.js)
-├── excel-dashboard/         # Módulo de generación de reportes y métricas QA en Excel
-├── tests/                   # Framework de testing E2E con Playwright
-│   ├── E2E.spec.js          # Pruebas integrales de navegación, DOM y accesibilidad
-│   └── portfolio.spec.js    # Verificaciones de carga, títulos e interactividad
-├── .gitignore               # Exclusiones de Git (node_modules, reportes, cachés, .venv)
-├── app.js                   # Lógica e interactividad de la aplicación web (DOM, animaciones)
-├── cypress.config.js        # Configuración principal del entorno Cypress
-├── index.html               # Estructura semántica principal de la web
-├── package.json             # Dependencias del proyecto y scripts automatizados
-├── playwright.config.js     # Configuración principal del entorno Playwright
-├── README.md                # Documentación técnica completa
-└── styles.css               # Estilos visuales, temas y diseño responsivo
+├── .github/
+│   └── workflows/
+│       └── ci.yml             # Definición del pipeline CI/CD en GitHub Actions
+├── assets/                    # Recursos estáticos (imágenes, iconos, tipografías)
+├── cypress/                   # Framework de pruebas con Cypress
+│   ├── e2e/                   # Specs (smoke.cy.js, carga.cy.js, navegacion.cy.js)
+│   ├── reports/               # Reportes HTML y JSON generados por Mochawesome
+│   └── support/               # Comandos personalizados y utilidades de entorno
+├── excel-dashboard/           # Automatización de métricas ejecutivas en Excel
+│   ├── generate_dashboard.py  # Script Python que procesa JSONs y genera Excel
+│   └── QA_Executive_Dashboard.xlsx # Dashboard compilado con gráficos y KPIs
+├── tests/                     # Framework de pruebas con Playwright
+│   ├── smoke.spec.js          # Smoke tests (Hero, títulos, disponibilidad HTTP)
+│   ├── carga.spec.js          # Validaciones de tiempo de respuesta y carga
+│   └── E2E.spec.js            # Flujos integrales de usuario y accesibilidad
+├── app.js                     # Interactividad, lógica dinámica y animaciones de la UI
+├── cypress.config.js          # Configuración de Cypress y persistencia de reportes
+├── index.html                 # Estructura semántica principal del portafolio
+├── package.json               # Dependencias de testing y scripts automatizados
+├── playwright.config.js       # Configuración de Playwright (headless, workers, reportes)
+├── requirements.txt           # Dependencias de Python para el dashboard (openpyxl)
+├── README.md                  # Documentación técnica integral
+└── styles.css                 # Sistema de diseño, CSS moderno y responsive design
 ```
 
 ---
 
-## 🛠️ Tecnologías Empleadas
+## 🛠️ Tecnologías y Herramientas
 
-- **Frontend:** HTML5 semántico, CSS3 moderno (diseño responsivo, animaciones), JavaScript (ES6+).
-- **Testing E2E & Automatización:**
-  - **Playwright:** Ejecución multiplataforma (Chromium, Firefox, WebKit), modo `--ui`, inspección con Locator / ARIA tree y grabación con Codegen.
-  - **Cypress:** Pruebas de integración visual, Test Runner interactivo, aserciones Chai/Mocha y generación de reportes.
-- **Métricas & QA Reporting:** Scripts en Python con `openpyxl` en `excel-dashboard/` para consolidación de métricas de calidad.
-- **Control de Versiones y Despliegue:** Git, GitHub Pages.
-
----
-
-## 🚀 Requisitos e Instalación
-
-1. **Clonar o situarse en el repositorio:**
-   ```bash
-   cd Portfolio
-   ```
-
-2. **Instalar dependencias de Node.js:**
-   ```bash
-   npm install
-   ```
-
-3. **Instalar los navegadores de Playwright:**
-   ```bash
-   npx playwright install
-   ```
+* **Frontend:** HTML5 semántico, CSS3 moderno (Variables CSS, Flexbox/Grid, Animaciones), JavaScript moderno (ES6+).
+* **Testing E2E & Automatización:**
+  * **Playwright:** Ejecución en paralelo ultra-rápida, modo *headless*, inspector interactivo con `--ui` y grabación con *Codegen*.
+  * **Cypress:** Pruebas funcionales de interfaz, motor Mochawesome para reportes estructurados.
+* **Métricas & QA Reporting:** Python 3 + `openpyxl` para modelado de datos, tablas dinámicas, fórmulas de *Pass Rate* y gráficos en Excel.
+* **DevOps / CI-CD:** GitHub Actions y GitHub Pages.
 
 ---
 
-## 🎭 Pruebas con Playwright
+## ⚡ Comandos Rápidos de Ejecución (Scripts de NPM)
 
-Las pruebas de Playwright se encuentran en el directorio `tests/` y validan la carga rápida, la visibilidad de elementos clave y los flujos de interacción.
+Desde la terminal en la raíz del proyecto:
 
-### Comandos de Ejecución
+### 🌟 Ejecución Completa QA
+Ejecuta Playwright + Cypress + Generación del Excel de una sola vez:
+```bash
+npm run qa:full
+```
+
+### 🎭 Pruebas con Playwright
+```bash
+# Ejecutar todas las pruebas en segundo plano (rápido y silencioso)
+npm run test:playwright
+
+# Ejecutar únicamente los Smoke Tests
+npm run test:playwright:smoke
+
+# Ejecutar pruebas de carga
+npm run test:playwright:carga
+
+# Ejecutar pruebas End-to-End
+npm run test:playwright:e2e
+
+# Modo interactivo visual con panel de control paso a paso
+npm run test:playwright:ui
+
+# Abrir el último reporte HTML generado
+npm run report:playwright
+```
+
+### 🌲 Pruebas con Cypress
+```bash
+# Ejecutar todas las pruebas de Cypress por consola
+npm run test:cypress
+
+# Ejecutar solo Smoke Tests de Cypress
+npm run test:cypress:smoke
+
+# Ejecutar pruebas de Navegación de Cypress
+npm run test:cypress:navegacion
+
+# Abrir la interfaz gráfica interactiva (Test Runner)
+npm run cypress:open
+```
+
+### 📊 Generación del Dashboard Ejecutivo en Excel
+```bash
+# Procesa los reportes JSON de Playwright y Cypress y crea el Excel
+npm run report:excel
+```
+
+---
+
+## ⚙️ Configuración de Entornos
+
+### Playwright (`playwright.config.js`)
+Configurado para ejecución óptima tanto en local como en GitHub Actions:
+* **Headless:** Habilitado de fondo para máxima velocidad sin saturar el escritorio.
+* **Workers:** Paralelismo automático según los núcleos del procesador.
+* **Reporters:** Genera reporte interactivo HTML (`playwright-report`) y volcado de datos en JSON (`results.json`).
+
+### Cypress (`cypress.config.js`)
+* **Reporter:** `cypress-mochawesome-reporter` con gráficos y capturas integradas.
+* **`saveJson: true`:** Mantiene los reportes individuales en `.jsons/` para que el script de Python pueda consolidar las métricas de Cypress en el Excel.
+
+---
+
+## 📊 Matriz de Cobertura QA
+
+| Módulo / Área Web | Herramienta | Tipo de Prueba | Criterio de Aceptación |
+| :--- | :---: | :---: | :--- |
+| **Disponibilidad & Hero** | Playwright / Cypress | Smoke / HTTP | Respuesta 200, renderizado del Hero y títulos de identidad. |
+| **Navegación & Menú** | Cypress / Playwright | E2E / Funcional | Enlaces ancla realizan scroll suave y actualizan el hash en la URL. |
+| **Módulo de Skills** | Playwright / Cypress | Interactivo / DOM | Carga dinámica de habilidades técnicas (FrontEnd, Testing, Teleco). |
+| **Proyectos Destacados** | Playwright / Cypress | UI / Componente | Pestañas alternan tarjetas de Telecomunicaciones y Testing & QA. |
+| **Contacto & Redes** | Playwright / Cypress | Enlaces / CV | Enlaces de correo (`mailto:`), LinkedIn, GitHub y descarga de CV válidos. |
+| **Rendimiento y Carga** | Playwright / Cypress | Performance | Tiempos de carga y estabilidad por debajo de los umbrales límite. |
+
+---
+
+## 📤 Publicación de Cambios en Git
+
+Para subir actualizaciones a GitHub y activar el pipeline automático:
 
 ```bash
-# Ejecutar todas las pruebas en segundo plano (Headless)
-npx playwright test
-
-# Ejecutar viendo el navegador interactuar en vivo (Headed)
-npx playwright test --headed
-
-# Abrir el entorno visual e interactivo (Playwright UI Mode)
-npx playwright test --ui
-
-# Generar y grabar pruebas automáticamente interactuando con la web
-npx playwright codegen https://nafraba.github.io/mi-portafolio/
-
-# Ver el último reporte HTML generado
-npx playwright show-report
-```
-
-### Configuración (`playwright.config.js`)
-```javascript
-import { defineConfig } from '@playwright/test';
-
-export default defineConfig({
-  testDir: './tests',
-  use: {
-    headless: false,
-    baseURL: 'https://nafraba.github.io/mi-portafolio/',
-    trace: 'on-first-retry',
-  },
-});
-```
-
----
-
-## 🌲 Pruebas con Cypress
-
-Las pruebas de Cypress residen en `cypress/e2e/` y validan el comportamiento funcional, los eventos de clic y la navegación fluida.
-
-### Comandos de Ejecución
-
-```bash
-# Abrir la interfaz interactiva gráfica de Cypress (Test Runner)
-npx cypress open
-
-# Ejecutar todas las suites por consola en modo desatendido
-npx cypress run
-
-# Ejecutar un archivo de prueba específico
-npx cypress run --spec "cypress/e2e/navegacion.cy.js"
-```
-
-### Configuración (`cypress.config.js`)
-```javascript
-const { defineConfig } = require("cypress");
-
-module.exports = defineConfig({
-  e2e: {
-    baseUrl: "https://nafraba.github.io/mi-portafolio/",
-    setupNodeEvents(on, config) {
-      // implement node event listeners here
-    },
-  },
-});
-```
-
----
-
-## 📊 Cobertura de Pruebas
-
-| ID | Herramienta | Caso de Prueba | Criterio de Aceptación |
-| :---: | :---: | :--- | :--- |
-| **TC-01** | Playwright | Verificación de carga y título | La página responde con HTTP 200 y el título no está vacío. |
-| **TC-02** | Playwright | Navegación de secciones (Contacto/Proyectos) | Localización semántica del botón/enlace y scroll/apertura correcta. |
-| **TC-03** | Playwright | Accesibilidad y roles ARIA | Elementos principales cuentan con accesibilidad e interactividad detectable. |
-| **TC-04** | Cypress | Renderizado del DOM principal | Estructura `#root` o contenedores principales visibles sin errores en consola. |
-| **TC-05** | Cypress | Interacción y transición de tarjetas | Clic en elementos de proyectos o habilidades despliega el contenido esperado. |
-
----
-
-## 📤 Flujo de Trabajo en Git
-
-Para registrar y sincronizar los cambios locales con el repositorio remoto en GitHub:
-
-```bash
-# 1. Comprobar archivos modificados y nuevos
+# 1. Comprobar archivos modificados
 git status
 
-# 2. Agregar todos los cambios respetando las exclusiones de .gitignore
+# 2. Añadir los cambios
 git add .
 
 # 3. Crear commit descriptivo
-git commit -m "docs: actualizar README y suite de pruebas E2E con Cypress y Playwright"
+git commit -m "docs: actualizar README con arquitectura de pipeline CI/CD y badges"
 
-# 4. Subir los cambios a GitHub
-git push
+# 4. Enviar a GitHub (dispara el pipeline CI automáticamente)
+git push origin main
 ```
