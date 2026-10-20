@@ -1743,17 +1743,13 @@ body:has(#contact:hover) .cursor-glow {
   font-weight: 600;
 }
 
-.test-target {
+.test-links {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
-  margin-top: 18px;
-}
-
-.test-target-label {
-  font-size: 0.95rem;
-  color: rgba(245, 247, 255, 0.95);
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 25px;
 }
 
 .extra-info {
