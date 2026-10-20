@@ -1743,6 +1743,19 @@ body:has(#contact:hover) .cursor-glow {
   font-weight: 600;
 }
 
+.test-target {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.test-target-label {
+  font-size: 0.95rem;
+  color: rgba(245, 247, 255, 0.95);
+}
+
 .extra-info {
   font-size: 0.9rem;
   color: rgba(245, 247, 255, 0.6);
