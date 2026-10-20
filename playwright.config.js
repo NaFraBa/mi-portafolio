@@ -24,7 +24,7 @@ export default defineConfig({
 
     // Abre el navegador visible tal como lo tenías configurado
     //headless: !!process.env.CI,
-    headless:true,
+    headless: true,
 
     // Captura trazas y screenshots si un test falla
     trace: 'on-first-retry',
