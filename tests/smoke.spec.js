@@ -48,24 +48,26 @@ test.describe('Smoke Tests Pool - Portfolio Ignacio Fraile @smoke', () => {
   });
 
   test('ST-05: Verificación de canales de contacto, redes sociales y descarga de CV', async ({ page }) => {
+    const contactSection = page.locator('#contact');
+
     // 1. Correo electrónico
-    const mailLink = page.getByRole('link', { name: /Correo|Email/i }).first();
+    const mailLink = contactSection.getByRole('link', { name: /Correo|Email/i }).first();
     await expect(mailLink).toBeVisible();
     const mailHref = await mailLink.getAttribute('href');
     expect(mailHref).toMatch(/^mailto:[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/);
 
     // 2. LinkedIn
-    const linkedInLink = page.getByRole('link', { name: /LinkedIn/i }).first();
+    const linkedInLink = contactSection.getByRole('link', { name: /LinkedIn/i }).first();
     await expect(linkedInLink).toBeVisible();
     expect(await linkedInLink.getAttribute('href')).toContain('linkedin.com');
 
-    // 3. GitHub
-    const gitHubLink = page.getByRole('link', { name: /GitHub/i }).first();
+    // 3. GitHub (sección Contacto)
+    const gitHubLink = contactSection.getByRole('link', { name: /GitHub/i }).first();
     await expect(gitHubLink).toBeVisible();
     expect(await gitHubLink.getAttribute('href')).toContain('github.com');
 
     // 4. Descarga CV
-    const cvLink = page.getByRole('link', { name: /Descargar CV/i }).first();
+    const cvLink = contactSection.getByRole('link', { name: /Descargar CV/i }).first();
     await expect(cvLink).toBeVisible();
     expect(await cvLink.getAttribute('href')).toBeTruthy();
 

@@ -50,10 +50,10 @@ describe('Smoke Tests Pool - Portfolio Ignacio Fraile (Producción)', () => {
 
   it('ST-06: Verificación de canales de contacto, redes sociales y correo', () => {
     // Scroll al pie de página / sección de contacto para activar la animación
-    cy.contains('a', /Correo|Email/i).scrollIntoView();
+    cy.get('#contact').scrollIntoView();
 
     // 1. Enlace de Correo Electrónico (mailto)
-    cy.contains('a', /Correo|Email/i)
+    cy.get('#contact').contains('a', /Correo|Email/i)
       .should('be.visible')
       .and('have.attr', 'href')
       .then((href) => {
@@ -61,7 +61,7 @@ describe('Smoke Tests Pool - Portfolio Ignacio Fraile (Producción)', () => {
       });
 
     // 2. Enlace a LinkedIn
-    cy.contains('a', /LinkedIn/i)
+    cy.get('#contact').contains('a', /LinkedIn/i)
       .scrollIntoView()
       .should('be.visible')
       .and('have.attr', 'href')
@@ -69,11 +69,11 @@ describe('Smoke Tests Pool - Portfolio Ignacio Fraile (Producción)', () => {
         expect(href).to.include('linkedin.com');
       });
 
-    cy.contains('a', /LinkedIn/i)
+    cy.get('#contact').contains('a', /LinkedIn/i)
       .should('have.attr', 'target', '_blank');
 
-    // 3. Enlace a GitHub
-    cy.contains('a', /GitHub/i)
+    // 3. Enlace a GitHub (sección Contacto)
+    cy.get('#contact').contains('a', /GitHub/i)
       .scrollIntoView()
       .should('be.visible')
       .and('have.attr', 'href')
@@ -81,17 +81,17 @@ describe('Smoke Tests Pool - Portfolio Ignacio Fraile (Producción)', () => {
         expect(href).to.include('github.com');
       });
 
-    cy.contains('a', /GitHub/i)
+    cy.get('#contact').contains('a', /GitHub/i)
       .should('have.attr', 'target', '_blank');
 
     // 4. Enlace de Descarga de CV
-    cy.contains('a', /Descargar CV/i)
+    cy.get('#contact').contains('a', /Descargar CV/i)
       .scrollIntoView()
       .should('be.visible')
       .and('have.attr', 'href')
       .and('not.be.empty');
 
     // 5. Ubicación geográfica informativa
-    cy.contains(/Madrid, España/i).scrollIntoView().should('be.visible');
+    cy.get('#contact').contains(/Madrid, España/i).scrollIntoView().should('be.visible');
   });
 });
